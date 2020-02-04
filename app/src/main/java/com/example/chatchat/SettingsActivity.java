@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -41,6 +43,7 @@ public class SettingsActivity extends AppCompatActivity {
     private DatabaseReference RootRef;
     private static final int GalleryPick = 1;
     private StorageReference UserProfileImagesRef ;
+    private ProgressDialog loadingBar ;
 
 
     @Override
@@ -52,6 +55,7 @@ public class SettingsActivity extends AppCompatActivity {
         currentUserID = mAuth.getCurrentUser().getUid();
         RootRef = FirebaseDatabase.getInstance().getReference();
         UserProfileImagesRef = FirebaseStorage.getInstance().getReference().child("Profile Images");
+
 
         InitializeFields();
        // userName.setVisibility(View.INVISIBLE);
@@ -88,6 +92,8 @@ public class SettingsActivity extends AppCompatActivity {
         userProfileImage = (CircleImageView) findViewById(R.id.set_profile_image);
         //UserProfileImagesRef = FirebaseStorage.getInstance().getReference().child("Profile Images");
 
+        loadingBar = new ProgressDialog(this);
+
 
     }
 
@@ -106,6 +112,11 @@ public class SettingsActivity extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
 
             if (resultCode==RESULT_OK){
+                loadingBar.setTitle("Updating Profile Picture");
+                loadingBar.setMessage("Please wait, while your profile image is updating... ");
+                loadingBar.setCanceledOnTouchOutside(false);
+                loadingBar.show();
+
                 Uri resultUri = result.getUri();
 
                 StorageReference filePath =UserProfileImagesRef.child(currentUserID + ".jpg");
@@ -114,10 +125,32 @@ public class SettingsActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                         if (task.isSuccessful()){
                             Toast.makeText(SettingsActivity.this, "Profile Image uploaded Successfully...", Toast.LENGTH_SHORT).show();
+
+                            final String downloadUri = task.getResult().getDownloadUrl().toString();
+
+
+                            RootRef.child("Users").child(currentUserID).child("image").setValue(downloadUri)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful())
+                                            {
+
+                                                Toast.makeText(SettingsActivity.this, "Image saved in Database Successfully...", Toast.LENGTH_SHORT).show();
+                                            loadingBar.dismiss();
+                                            }
+                                            else {
+                                                String message = task.getException().toString();
+                                                Toast.makeText(SettingsActivity.this, "ERROR : "+message, Toast.LENGTH_SHORT).show();
+                                                loadingBar.dismiss();
+                                            }
+                                        }
+                                    });
                         }
                         else {
                             String message= task.getException().toString();
-                            Toast.makeText(SettingsActivity.this, "ERROR : "+ message, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SettingsActivity.this, "ERROR: "+ message, Toast.LENGTH_SHORT).show();
+                            loadingBar.dismiss();
                         }
                     }
                 });
@@ -170,6 +203,8 @@ public class SettingsActivity extends AppCompatActivity {
                     String retrieveProfileImage =dataSnapshot.child("image").getValue().toString();
                     userName.setText(retrieveUserName);
                     userStatus.setText(retrievestatus);
+                    Picasso.get().load(retrieveProfileImage).into(userProfileImage);
+
 
                 }
                 else if ((dataSnapshot.exists())&& (dataSnapshot.hasChild("name"))) {

@@ -110,7 +110,7 @@ private FirebaseAuth mAuth ;
             SendUserToSettingsActivity();
         }
         if (item.getItemId() == R.id.main_find_friends_option){
-
+            SendUserToFindFriendsActivity();
         }
         if (item.getItemId() == R.id.main_create_group_option){
             RequestNewGroup();
@@ -169,4 +169,11 @@ private FirebaseAuth mAuth ;
         startActivity(settingsIntent);
         finish();
     }
+
+    private void SendUserToFindFriendsActivity() {
+        Intent findFriendsIntent =new Intent(MainActivity.this,FindFriendsActivity.class);
+        startActivity(findFriendsIntent);
+
+    }
+
 }
