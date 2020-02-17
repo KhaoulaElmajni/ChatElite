@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -44,6 +45,7 @@ public class SettingsActivity extends AppCompatActivity {
     private static final int GalleryPick = 1;
     private StorageReference UserProfileImagesRef ;
     private ProgressDialog loadingBar ;
+    private Toolbar SettingsToolbar ;
 
 
     @Override
@@ -93,8 +95,11 @@ public class SettingsActivity extends AppCompatActivity {
         //UserProfileImagesRef = FirebaseStorage.getInstance().getReference().child("Profile Images");
 
         loadingBar = new ProgressDialog(this);
-
-
+        SettingsToolbar = (Toolbar)findViewById(R.id.settings_toolbar);
+        setSupportActionBar(SettingsToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setTitle("Account Settings");
     }
 
 
@@ -171,11 +176,11 @@ public class SettingsActivity extends AppCompatActivity {
             Toast.makeText(this,"Please write your status...",Toast.LENGTH_SHORT).show();
         }
         else {
-            HashMap<String,String> profileMap  =new HashMap<>();
+            HashMap<String,Object> profileMap  =new HashMap<>();
             profileMap.put("uid",currentUserID);
             profileMap.put("name",setUserName);
             profileMap.put("status",setUserStatus);
-            RootRef.child("Users").child(currentUserID).setValue(profileMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            RootRef.child("Users").child(currentUserID).updateChildren(profileMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()){

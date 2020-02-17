@@ -3,6 +3,9 @@ package com.example.chatchat;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +22,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class RegisterActivity extends AppCompatActivity {
     private Button CreateAccountButton ;
@@ -77,8 +81,13 @@ else{
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
 
+                        String deviceToken = FirebaseInstanceId.getInstance().getToken();
+
                         String currentUserID = mAuth.getCurrentUser().getUid();
                         RootRef.child("Users").child(currentUserID).setValue("");
+
+                        RootRef.child("Users").child(currentUserID).child("device_token")
+                                .setValue(deviceToken);
 
                         SendUserToMainActivity();
                         Toast.makeText(RegisterActivity.this, "Your Account Created Successfully!", Toast.LENGTH_SHORT).show();
