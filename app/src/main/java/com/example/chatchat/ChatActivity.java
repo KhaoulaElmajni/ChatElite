@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,7 +32,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,12 +42,12 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatActivity extends AppCompatActivity {
+    public static boolean isWorking = false;
+    private String messageReceiverID, messageReceiverName, messageReceiverImage, messageSenderID;
 
-    private String messageReceiverID,messageReceiverName , messageReceiverImage , messageSenderID;
-
-    private TextView  userName , userLastSeen;
+    private TextView userName, userLastSeen;
     private CircleImageView userImage;
-    private Toolbar ChatToolbar ;
+    private Toolbar ChatToolbar;
 
     private FirebaseAuth mAuth;
     private DatabaseReference RootRef;
@@ -51,17 +55,17 @@ public class ChatActivity extends AppCompatActivity {
     private ImageButton SendMessageButton;
     private EditText MessageInputText;
     private final List<Messages> messagesList = new ArrayList<>();
-    private LinearLayoutManager linearLayoutManager ;
+    private LinearLayoutManager linearLayoutManager;
     private MessageAdapter messageAdapter;
-    private RecyclerView userMessagesList ;
+    private RecyclerView userMessagesList;
 
-
+    private String currentUserID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         mAuth = FirebaseAuth.getInstance();
-        messageSenderID= mAuth.getCurrentUser().getUid();
+        messageSenderID = mAuth.getCurrentUser().getUid();
         RootRef = FirebaseDatabase.getInstance().getReference();
 
         messageReceiverID = getIntent().getExtras().get("visit_user_id").toString();
@@ -86,27 +90,27 @@ public class ChatActivity extends AppCompatActivity {
 
     private void InitializeControllers() {
 
-        ChatToolbar = (Toolbar)findViewById(R.id.chat_toolbar);
+        ChatToolbar = (Toolbar) findViewById(R.id.chat_toolbar);
         setSupportActionBar(ChatToolbar);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowCustomEnabled(true);
 
-        LayoutInflater layoutInflater= (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View actionBarView = layoutInflater.inflate(R.layout.custom_chat_bar,null);
+        LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View actionBarView = layoutInflater.inflate(R.layout.custom_chat_bar, null);
         actionBar.setCustomView(actionBarView);
 
         userImage = (CircleImageView) findViewById(R.id.custom_profile_image);
-        userName = (TextView)findViewById(R.id.custom_profile_name);
-        userLastSeen = (TextView)findViewById(R.id.custom_user_last_seen);
+        userName = (TextView) findViewById(R.id.custom_profile_name);
+        userLastSeen = (TextView) findViewById(R.id.custom_user_last_seen);
 
-        SendMessageButton = (ImageButton)findViewById(R.id.send_message_btn);
-        MessageInputText = (EditText)findViewById(R.id.input_message);
+        SendMessageButton = (ImageButton) findViewById(R.id.send_message_btn);
+        MessageInputText = (EditText) findViewById(R.id.input_message);
 
         messageAdapter = new MessageAdapter(messagesList);
 
-        userMessagesList = (RecyclerView)findViewById(R.id.private_messages_list_of_users);
+        userMessagesList = (RecyclerView) findViewById(R.id.private_messages_list_of_users);
         linearLayoutManager = new LinearLayoutManager(this);
         userMessagesList.setLayoutManager(linearLayoutManager);
         userMessagesList.setAdapter(messageAdapter);
@@ -114,25 +118,23 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
-    private  void DisplayLastSeen(){
+    private void DisplayLastSeen() {
         RootRef.child("Users").child(messageSenderID)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.child("userState").hasChild("state")){
+                        if (dataSnapshot.child("userState").hasChild("state")) {
                             String state = dataSnapshot.child("userState").child("state").getValue().toString();
                             String date = dataSnapshot.child("userState").child("date").getValue().toString();
                             String time = dataSnapshot.child("userState").child("time").getValue().toString();
 
-                            if (state.equals("online")){
+                            if (state.equals("online")) {
                                 userLastSeen.setText("online");
-                            }
-                            else if (state.equals("offline")){
-                                userLastSeen.setText("Last seen: "+date+" "+time);
+                            } else if (state.equals("offline")) {
+                                userLastSeen.setText("Last seen: " + date + " " + time);
                             }
 
-                        }
-                        else {
+                        } else {
                             userLastSeen.setText("offline");
 
                         }
@@ -145,23 +147,37 @@ public class ChatActivity extends AppCompatActivity {
                 });
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isWorking = false;
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            if (!MainActivity.isWorking && !ChatActivity.isWorking && !FindFriendsActivity.isWorking && !SettingsActivity.isWorking && !ProfileActivity.isWorking)
+                UpdateUserStatus("offline");
+        }
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
+        isWorking = true;
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            //SendUserToLoginActivity();
+        } else {
+            UpdateUserStatus("online");
 
+            //VerifyUserExistance();
+        }
         RootRef.child("Messages").child(messageSenderID).child(messageReceiverID)
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         Messages messages = dataSnapshot.getValue(Messages.class);
-
                         messagesList.add(messages);
-
                         messageAdapter.notifyDataSetChanged();
-
                         userMessagesList.smoothScrollToPosition(userMessagesList.getAdapter().getItemCount());
-
                     }
 
                     @Override
@@ -186,36 +202,33 @@ public class ChatActivity extends AppCompatActivity {
                 });
     }
 
-    private void SendMessage(){
+    private void SendMessage() {
         String messageText = MessageInputText.getText().toString();
 
-        if (TextUtils.isEmpty(messageText)){
+        if (TextUtils.isEmpty(messageText)) {
             Toast.makeText(this, "first write your message...", Toast.LENGTH_SHORT).show();
-        }
-        else {
-            String messageSenderRef ="Messages/"+messageSenderID+"/"+messageReceiverID;
-            String messageReceiverRef ="Messages/"+messageReceiverID+"/"+messageSenderID;
+        } else {
+            String messageSenderRef = "Messages/" + messageSenderID + "/" + messageReceiverID;
+            String messageReceiverRef = "Messages/" + messageReceiverID + "/" + messageSenderID;
 
             DatabaseReference userMessageKeyRef = RootRef.child("Messages")
                     .child(messageSenderID).child(messageReceiverID).push();
             String messagePushID = userMessageKeyRef.getKey();
             Map messageTextBody = new HashMap();
-            messageTextBody.put("message",messageText);
-            messageTextBody.put("type","text");
-            messageTextBody.put("from",messageSenderID);
+            messageTextBody.put("message", messageText);
+            messageTextBody.put("type", "text");
+            messageTextBody.put("from", messageSenderID);
 
             Map messageBodyDetails = new HashMap();
-            messageBodyDetails.put(messageSenderRef+"/"+messagePushID,messageTextBody);
-            messageBodyDetails.put(messageReceiverRef+"/"+messagePushID,messageTextBody);
+            messageBodyDetails.put(messageSenderRef + "/" + messagePushID, messageTextBody);
+            messageBodyDetails.put(messageReceiverRef + "/" + messagePushID, messageTextBody);
 
             RootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task task) {
-                    if (task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         Toast.makeText(ChatActivity.this, "Message Sent Successfully...", Toast.LENGTH_SHORT).show();
-                    }
-                    else
-                    {
+                    } else {
                         Toast.makeText(ChatActivity.this, "ERROR:", Toast.LENGTH_SHORT).show();
 
                     }
@@ -224,4 +237,28 @@ public class ChatActivity extends AppCompatActivity {
             });
         }
     }
+
+
+    private void UpdateUserStatus(String state) {
+        String saveCurrentTime, saveCurrentDate;
+        Calendar calendar = Calendar.getInstance();
+
+        SimpleDateFormat currentDate = new SimpleDateFormat("MMM/dd/yyyy");
+        saveCurrentDate = currentDate.format(calendar.getTime());
+
+
+        SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm: a");
+        saveCurrentTime = currentTime.format(calendar.getTime());
+
+        HashMap<String, Object> onlineStateMap = new HashMap<>();
+        onlineStateMap.put("time", saveCurrentTime);
+        onlineStateMap.put("date", saveCurrentDate);
+        onlineStateMap.put("state", state);
+
+        currentUserID = mAuth.getCurrentUser().getUid();
+
+        RootRef.child("Users").child(currentUserID).child("userState")
+                .updateChildren(onlineStateMap);
+    }
+
 }

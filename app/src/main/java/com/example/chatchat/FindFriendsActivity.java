@@ -17,9 +17,15 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -27,11 +33,24 @@ public class FindFriendsActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private RecyclerView FindFriendsRecyclerList;
     private DatabaseReference UsersRef;
+    public static boolean isWorking = false;
+
+    private FirebaseAuth mAuth;
+
+    private String currentUserID;
+    private DatabaseReference RootRef;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_friends);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        RootRef = FirebaseDatabase.getInstance().getReference();
+
+
 
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
@@ -47,9 +66,29 @@ public class FindFriendsActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        isWorking = false;
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            if (!MainActivity.isWorking && !ChatActivity.isWorking && !FindFriendsActivity.isWorking && !SettingsActivity.isWorking && !ProfileActivity.isWorking)
+                UpdateUserStatus("offline");
+        }
+    }
+
+
+    @Override
     protected void onStart() {
         super.onStart();
+        isWorking = true;
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            //SendUserToLoginActivity();
+        } else {
+            UpdateUserStatus("online");
 
+            //VerifyUserExistance();
+        }
         FirebaseRecyclerOptions<Contacts> options =new FirebaseRecyclerOptions.Builder<Contacts>()
                 .setQuery(UsersRef,Contacts.class).build();
 
@@ -68,7 +107,6 @@ public class FindFriendsActivity extends AppCompatActivity {
                         Intent profileIntent = new Intent(FindFriendsActivity.this, ProfileActivity.class);
                         profileIntent.putExtra("visit_user_id",visit_user_id);
                         startActivity(profileIntent);
-
                     }
                 });
             }
@@ -101,4 +139,29 @@ public class FindFriendsActivity extends AppCompatActivity {
 
         }
     }
+
+
+    private void UpdateUserStatus(String state) {
+        String saveCurrentTime, saveCurrentDate;
+        Calendar calendar = Calendar.getInstance();
+
+        SimpleDateFormat currentDate = new SimpleDateFormat("MMM/dd/yyyy");
+        saveCurrentDate = currentDate.format(calendar.getTime());
+
+
+        SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm: a");
+        saveCurrentTime = currentTime.format(calendar.getTime());
+
+        HashMap<String, Object> onlineStateMap = new HashMap<>();
+        onlineStateMap.put("time", saveCurrentTime);
+        onlineStateMap.put("date", saveCurrentDate);
+        onlineStateMap.put("state", state);
+
+        currentUserID = mAuth.getCurrentUser().getUid();
+
+        RootRef.child("Users").child(currentUserID).child("userState")
+                .updateChildren(onlineStateMap);
+    }
+
+
 }
