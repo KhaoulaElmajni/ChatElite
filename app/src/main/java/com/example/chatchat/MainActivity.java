@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout myTabLayout;
     private TabsAccessorAsadpter myTabsAccessorAsadpter;
 private DatabaseReference RootRef ;
-    private FirebaseUser currentUser;
+
 private FirebaseAuth mAuth ;
 
 private String currentUserID;
@@ -52,7 +52,7 @@ private String currentUserID;
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
+
         RootRef = FirebaseDatabase.getInstance().getReference();
 
         mToolbar = (Toolbar) findViewById(R.id.main_page_toolbar);
@@ -68,6 +68,8 @@ private String currentUserID;
     @Override
     protected void onStart() {
         super.onStart();
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser==null){
             SendUserToLoginActivity();
         }
@@ -82,9 +84,9 @@ private String currentUserID;
     @Override
     protected void onStop() {
         super.onStop();
-
-        if (currentUser!=null){
-            UpdateUserStatus("offline");
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+      if (currentUser!=null){
+        UpdateUserStatus("offline");
         }
     }
 
@@ -92,7 +94,7 @@ private String currentUserID;
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser!=null){
             UpdateUserStatus("offline");
         }
@@ -133,6 +135,7 @@ private String currentUserID;
     public boolean onOptionsItemSelected(MenuItem item) {
        super.onOptionsItemSelected(item);
        if (item.getItemId() == R.id.main_logout_option){
+           UpdateUserStatus("offline");
            mAuth.signOut();
            SendUserToLoginActivity();
        }
@@ -209,7 +212,7 @@ private String currentUserID;
         String saveCurrentTime , saveCurrentDate;
         Calendar calendar = Calendar.getInstance();
 
-        SimpleDateFormat currentDate =new SimpleDateFormat("MMM dd,yyyy");
+        SimpleDateFormat currentDate =new SimpleDateFormat("MMM/dd/yyyy");
         saveCurrentDate = currentDate.format(calendar.getTime());
 
 
