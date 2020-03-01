@@ -4,73 +4,69 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F1F1F1"
+    android:id="@+id/layout"
     tools:context=".RegisterActivity">
     <ImageView
         android:id="@+id/register_image"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:src="@drawable/user"
+        android:src="@drawable/the_login"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:scaleType="fitCenter"
-        >
+        android:scaleType="fitCenter"/>
 
-    </ImageView>
     <EditText
-        android:id="@+id/register_email"
+        android:layout_below="@id/register_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/register_image"
+        android:layout_marginLeft="17dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginRight="17dp"
+        android:background="@drawable/input"
+        android:elevation="8dp"
+        android:gravity="center"
         android:hint="Enter your Email..."
         android:inputType="textEmailAddress"
-        android:background="@drawable/inputs"
         android:padding="4dp"
-        android:drawableStart="@drawable/email"
-        android:layout_marginTop="25dp"
-        android:layout_marginLeft="17dp"
-        android:layout_marginRight="17dp"
-        >
-
-    </EditText>
+        android:text="yassine.estsb@gmail.com"
+        android:textSize="20sp"
+        android:id="@+id/register_email"/>
 
     <EditText
         android:id="@+id/register_password"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/register_email"
         android:hint="Enter your Password..."
         android:inputType="textPassword"
-        android:background="@drawable/inputs"
+        android:background="@drawable/input"
+        android:elevation="8dp"
+        android:gravity="center"
+        android:text="123456789"
         android:padding="4dp"
-        android:drawableStart="@drawable/password"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="17dp"
-        android:layout_marginRight="17dp"
-
-        >
-
-    </EditText>
+        android:layout_marginRight="17dp"/>
 
 
     <Button
         android:id="@+id/register_button"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_below="@+id/register_password"
-        android:padding="4dp"
-        android:layout_marginTop="10dp"
         android:layout_marginLeft="19dp"
+        android:layout_marginTop="15dp"
         android:layout_marginRight="19dp"
-        android:text="Create Account"
+        android:background="@drawable/login_button"
+        android:elevation="8dp"
+        android:padding="4dp"
+        android:text="Login"
         android:textAllCaps="false"
-        android:textSize="24sp"
         android:textColor="@android:color/background_light"
-        android:background="@drawable/buttons"
-        >
-
-    </Button>
+        android:textSize="24sp"/>
     <TextView
         android:id="@+id/already_have_account_link"
         android:layout_width="match_parent"
@@ -84,7 +80,5 @@
         android:textAlignment="center"
         android:textSize="17sp"
         android:textStyle="bold"
-        android:textColor="@color/colorPrimaryDark"
-
-        ></TextView>
+        android:textColor="@color/colorPrimaryDark"/>
 </RelativeLayout>

@@ -8,11 +8,16 @@ import android.app.NotificationManager;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,59 +29,100 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.ArrayList;
+
 public class RegisterActivity extends AppCompatActivity {
-    private Button CreateAccountButton ;
-    private EditText UserEmail , UserPassword ;
+    private Button CreateAccountButton;
+    private EditText UserEmail, UserPassword;
     private TextView AlreadyHaveAccountLink;
-private ProgressDialog loadingBar ;
+    private ProgressDialog loadingBar;
     private FirebaseAuth mAuth;
-    private DatabaseReference RootRef ;
+    private DatabaseReference RootRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_register);
 
-        mAuth=FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
         RootRef = FirebaseDatabase.getInstance().getReference();
 
         InitializeFields();
-AlreadyHaveAccountLink.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View view) {
+        AlreadyHaveAccountLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-        SendUserToLoginActivity();
+                SendUserToLoginActivity();
+
+            }
+        });
+
+        CreateAccountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CreateNewAccount();
+            }
+        });
+
+
+        Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/font6.ttf");
+
+
+        RelativeLayout layout = findViewById(R.id.layout);
+        ArrayList<View> clds = getAllChildren(layout);
+        for (int i = 0; i < clds.size(); i += 1) {
+
+            if (clds.get(i) instanceof TextView) {
+                ((TextView) clds.get(i)).setTypeface(custom_font);
+            }
+
+            if (clds.get(i) instanceof Button) {
+                ((Button) clds.get(i)).setTypeface(custom_font);
+            }
+        }
+
 
     }
-});
 
-CreateAccountButton.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View view) {
-        CreateNewAccount();
+
+    private ArrayList<View> getAllChildren(View v) {
+
+        if (!(v instanceof ViewGroup)) {
+            ArrayList<View> viewArrayList = new ArrayList<>();
+            viewArrayList.add(v);
+            return viewArrayList;
+        }
+        ArrayList<View> result = new ArrayList<>();
+        ViewGroup viewGroup = (ViewGroup) v;
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            View child = viewGroup.getChildAt(i);
+            ArrayList<View> viewArrayList = new ArrayList<>();
+            viewArrayList.add(v);
+            viewArrayList.addAll(getAllChildren(child));
+            result.addAll(viewArrayList);
+        }
+        return result;
     }
-});
-
-    }
-
 
     private void CreateNewAccount() {
 
         String email = UserEmail.getText().toString();
         String password = UserPassword.getText().toString();
-if (TextUtils.isEmpty(email)){
-    Toast.makeText(this,"Please enter email...",Toast.LENGTH_SHORT).show();
-}
-if (TextUtils.isEmpty(password)){
-            Toast.makeText(this,"Please enter password...",Toast.LENGTH_SHORT).show();
-}
-else{
+        if (TextUtils.isEmpty(email)) {
+            Toast.makeText(this, "Please enter email...", Toast.LENGTH_SHORT).show();
+        }
+        if (TextUtils.isEmpty(password)) {
+            Toast.makeText(this, "Please enter password...", Toast.LENGTH_SHORT).show();
+        } else {
 
             loadingBar.setTitle("Creating new Account");
             loadingBar.setMessage("Please wait while we are creanting new account for you...");
             loadingBar.setCanceledOnTouchOutside(true);
             loadingBar.show();
 
-            mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
@@ -105,19 +151,20 @@ else{
 
     private void InitializeFields() {
 
-        CreateAccountButton = (Button)findViewById(R.id.register_button);
-        UserEmail =(EditText) findViewById(R.id.register_email);
-        UserPassword =(EditText) findViewById(R.id.register_password);
-        AlreadyHaveAccountLink = (TextView)findViewById(R.id.already_have_account_link);
-        loadingBar= new ProgressDialog(this);
+        CreateAccountButton = (Button) findViewById(R.id.register_button);
+        UserEmail = (EditText) findViewById(R.id.register_email);
+        UserPassword = (EditText) findViewById(R.id.register_password);
+        AlreadyHaveAccountLink = (TextView) findViewById(R.id.already_have_account_link);
+        loadingBar = new ProgressDialog(this);
     }
+
     private void SendUserToLoginActivity() {
-        Intent loginIntent =new Intent(RegisterActivity.this,LoginActivity.class);
+        Intent loginIntent = new Intent(RegisterActivity.this, LoginActivity.class);
         startActivity(loginIntent);
     }
 
     private void SendUserToMainActivity() {
-        Intent mainIntent =new Intent(RegisterActivity.this,MainActivity.class);
+        Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(mainIntent);
         finish();

@@ -1,13 +1,13 @@
 package com.example.chatchat;
 
 public class Contacts {
-    public String name, status, image ;
+    public String name, status, image;
 
-    public Contacts(){
+    public Contacts() {
 
     }
 
-    public Contacts(String image,String name, String status) {
+    public Contacts(String image, String name, String status) {
         this.image = image;
         this.name = name;
         this.status = status;
@@ -20,6 +20,7 @@ public class Contacts {
     public void setName(String name) {
         this.name = name;
     }
+
     public String getImage() {
         return image;
     }
@@ -27,6 +28,7 @@ public class Contacts {
     public void setImage(String image) {
         this.image = image;
     }
+
     public String getStatus() {
         return status;
     }
