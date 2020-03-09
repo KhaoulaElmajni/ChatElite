@@ -38,7 +38,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         this.userMessagesList = userMessagesList;
     }
 
-
     public class MessageViewHolder extends RecyclerView.ViewHolder {
         public TextView senderMessageText, receiverMessageText;
         public CircleImageView receiverProfileImage;

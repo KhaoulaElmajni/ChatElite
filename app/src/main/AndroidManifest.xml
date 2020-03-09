@@ -2,6 +2,20 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.chatchat">
 
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -16,14 +30,14 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:screenOrientation="portrait"
-            android:name=".ImageViewerActivity"/>
+            android:name=".ImageViewerActivity"
+            android:screenOrientation="portrait" />
 
         <activity
-            android:screenOrientation="portrait"
-            android:name=".LoginActivity" />
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -31,33 +45,41 @@
         </activity>
 
         <activity
-            android:screenOrientation="portrait"
-            android:name=".ProfileActivity" />
+            android:name=".ProfileActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".FindFriendsActivity"
             android:parentActivityName=".MainActivity" />
 
         <activity
-            android:screenOrientation="portrait"
-            android:name=".PhoneLoginActivity" />
-
-        <activity
-            android:screenOrientation="portrait"
-            android:name=".GroupChatActivity" />
-
-        <activity
-            android:screenOrientation="portrait"
-            android:name=".SettingsActivity"
+            android:name=".MainActivity"
             android:parentActivityName=".MainActivity" />
 
         <activity
-            android:screenOrientation="portrait"
-            android:name=".RegisterActivity" />
+            android:name=".PhoneLoginActivity"
+            android:screenOrientation="portrait" />
 
         <activity
-            android:screenOrientation="portrait"
-            android:name=".ChatActivity" />
+            android:name=".GroupChatActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".SettingsActivity"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".RegisterActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ChatActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".VideoCall"
+            android:screenOrientation="portrait" />
 
 
         <activity

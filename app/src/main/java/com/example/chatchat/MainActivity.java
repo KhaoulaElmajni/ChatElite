@@ -63,6 +63,10 @@ public class MainActivity extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
+
+        //startActivity(new Intent(MainActivity.this, VideoCall.class));
+
+
         mAuth = FirebaseAuth.getInstance();
         RootRef = FirebaseDatabase.getInstance().getReference();
         mToolbar = (Toolbar) findViewById(R.id.main_page_toolbar);
@@ -75,14 +79,14 @@ public class MainActivity extends AppCompatActivity {
         myTabLayout.setupWithViewPager(myViewPager);
 
         Toolbar toolbar = mToolbar;
-        for(int i = 0; i < toolbar.getChildCount(); i++){
+        for (int i = 0; i < toolbar.getChildCount(); i++) {
             View view = toolbar.getChildAt(i);
-            if(view instanceof TextView){
+            if (view instanceof TextView) {
                 TextView tv = (TextView) view;
                 Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/font6.ttf");
                 //if(tv.getText().equals(toolbar.getTitle())){
-                    tv.setTypeface(custom_font);
-                   // break;
+                tv.setTypeface(custom_font);
+                // break;
                 //}
             }
         }
@@ -118,8 +122,6 @@ public class MainActivity extends AppCompatActivity {
          }*/
 
 
-
-
         final SQLiteDatabase chatEliteDB = openOrCreateDatabase("ChatEliteDB", MODE_PRIVATE, null);
 
         chatEliteDB.execSQL("CREATE TABLE IF NOT EXISTS Messages\n" +
@@ -134,8 +136,6 @@ public class MainActivity extends AppCompatActivity {
                 "    SendingTime    TEXT\n" +
                 "\n" +
                 ");");
-
-
 
 
     }
@@ -166,11 +166,11 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
-            Log.d("ChatElite","null");
+            Log.d("ChatElite", "null");
             SendUserToLoginActivity();
 
         } else {
-            Log.d("ChatElite","not null");
+            Log.d("ChatElite", "not null");
             UpdateUserStatus("Online");
             VerifyUserExistance();
         }

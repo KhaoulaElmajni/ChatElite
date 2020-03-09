@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
@@ -19,27 +20,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
 
-
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-
-
-
-
-
 
   @Override
     public void onMessageReceived(final RemoteMessage remoteMessage) {
-
-
-
-
-
-
-
-
-
-
-
 
       Handler handler = new Handler(getMainLooper());
         handler.post(new Runnable() {
@@ -105,7 +89,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(String registrationToken) {
 
 
-        Logg.d("Firebase #onNewToken registrationToken=" + registrationToken);
+        Log.d("Firebase #onNewToken registrationToken=" , registrationToken);
 
         startService(new Intent(this, FcmTokenRegistrationService.class));
     }

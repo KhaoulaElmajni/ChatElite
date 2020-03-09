@@ -50,7 +50,7 @@ public class ContactsFragment extends Fragment {
         // Inflate the layout for this fragment
         ContactsView = inflater.inflate(R.layout.fragment_contacts, container, false);
 
-        myContactsList = (RecyclerView) ContactsView.findViewById(R.id.contacts_list);
+        myContactsList =  ContactsView.findViewById(R.id.contacts_list);
         myContactsList.setLayoutManager(new LinearLayoutManager(getContext()));
 
 
@@ -148,7 +148,7 @@ public class ContactsFragment extends Fragment {
             userName = itemView.findViewById(R.id.user_profile_name);
             userStatus = itemView.findViewById(R.id.user_status);
             profileImage = itemView.findViewById(R.id.users_profile_image);
-            onlineIcon = (ImageView) itemView.findViewById(R.id.user_online_status);
+            onlineIcon = itemView.findViewById(R.id.user_online_status);
 
         }
     }

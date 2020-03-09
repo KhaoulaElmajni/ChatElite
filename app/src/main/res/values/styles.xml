@@ -5,4 +5,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
     <style name="AlertDialog" parent="Theme.AppCompat.Light.Dialog"></style>
+
+
+    <style name="HeaderBar">
+        <item name="android:background">#303F9F</item>
+    </style>
 </resources>

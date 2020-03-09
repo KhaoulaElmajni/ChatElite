@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -19,6 +20,8 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.EditText;
@@ -169,7 +172,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void InitializeControllers() {
 
-        ChatToolbar = (Toolbar) findViewById(R.id.chat_toolbar);
+        ChatToolbar = findViewById(R.id.chat_toolbar);
         setSupportActionBar(ChatToolbar);
 
         ActionBar actionBar = getSupportActionBar();
@@ -177,17 +180,23 @@ public class ChatActivity extends AppCompatActivity {
         actionBar.setDisplayShowCustomEnabled(true);
 
         LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View actionBarView = layoutInflater.inflate(R.layout.custom_chat_bar, null);
+        View actionBarView = layoutInflater.inflate(R.layout.custom_chat_bar_old, null);
         actionBar.setCustomView(actionBarView);
 
-        userImage = (CircleImageView) findViewById(R.id.custom_profile_image);
-        userName = (TextView) findViewById(R.id.custom_profile_name);
-        userLastSeen = (TextView) findViewById(R.id.custom_user_last_seen);
 
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+
+        userImage = findViewById(R.id.custom_profile_image);
+        userName = findViewById(R.id.custom_profile_name);
+        userLastSeen = findViewById(R.id.custom_user_last_seen);
+        Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/font6.ttf");
+        userName.setTypeface(custom_font);
+        userLastSeen.setTypeface(custom_font);
         SendMessageButton = findViewById(R.id.send_message_btn);
         SendFilesButton = findViewById(R.id.send_files_btn);
 
-        MessageInputText = (EditText) findViewById(R.id.input_message);
+        MessageInputText =  findViewById(R.id.input_message);
 
 
         MessageInputText.addTextChangedListener(
@@ -529,6 +538,11 @@ public class ChatActivity extends AppCompatActivity {
                         Toast.makeText(ChatActivity.this, "Message Sent Successfully...", Toast.LENGTH_SHORT).show();
 
 
+
+
+
+
+
                         try {
                             Jsoup.connect("https://fcm.googleapis.com/fcm/send")
                                     .userAgent("Mozilla")
@@ -563,5 +577,37 @@ public class ChatActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.video_call) {
+            Intent phoneLoginIntent = new Intent(ChatActivity.this, VideoCall.class);
+            startActivity(phoneLoginIntent);
+            return true;
+        }
+
+        if (id == R.id.voice_call) {
+            //Intent phoneLoginIntent = new Intent(ChatActivity.this, VideoCall.class);
+            //startActivity(phoneLoginIntent);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

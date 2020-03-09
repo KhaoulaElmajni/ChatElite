@@ -43,7 +43,7 @@ public class FcmTokenRegistrationService extends IntentService {
                     public void onComplete(@NonNull Task<InstanceIdResult> task) {
                         if (!task.isSuccessful()) {
 
-                            Logg.d("Firebase getInstanceId failed " + task.getException());
+                            Log.d("Firebase getInstanceId failed " , task.getException().toString());
                             return;
                         }
 
