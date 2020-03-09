@@ -94,7 +94,13 @@ public class ChatsFragment extends Fragment {
                                 Picasso.get().load(retImage[0]).into(holder.profileImage);
                             }
 
+                            //holder.itemView.setTag("");
+
+
                             final String retName = dataSnapshot.child("name").getValue().toString();
+
+
+                            final String device_token = dataSnapshot.child("device_token").getValue().toString();
                             final String retStatus = dataSnapshot.child("status").getValue().toString();
                             holder.userName.setText(retName);
                             Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/font6.ttf");
@@ -130,6 +136,8 @@ public class ChatsFragment extends Fragment {
                                     chatIntent.putExtra("visit_user_id", usersIDs);
                                     chatIntent.putExtra("visit_user_name", retName);
                                     chatIntent.putExtra("visit_user_image", retImage[0]);
+                                    chatIntent.putExtra("device_token", holder.itemView.getTag().toString());
+                                    chatIntent.putExtra("user_full_name", device_token);
                                     startActivity(chatIntent);
                                 }
                             });

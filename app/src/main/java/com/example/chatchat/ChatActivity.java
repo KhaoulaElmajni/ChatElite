@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -68,8 +69,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatActivity extends AppCompatActivity {
 
-    private String messageReceiverID, messageReceiverName, messageReceiverImage, messageSenderID;
-
+    private String messageReceiverID, messageReceiverName, messageReceiverImage, messageSenderID,deviceToken;
+    private MediaPlayer mp;
     private TextView userName, userLastSeen;
     private CircleImageView userImage;
     private Toolbar ChatToolbar;
@@ -109,6 +110,8 @@ public class ChatActivity extends AppCompatActivity {
         messageReceiverID = getIntent().getExtras().get("visit_user_id").toString();
         messageReceiverName = getIntent().getExtras().get("visit_user_name").toString();
         messageReceiverImage = getIntent().getExtras().get("visit_user_image").toString();
+
+        deviceToken = getIntent().getExtras().get("device_token").toString();
 
 
         InitializeControllers();
@@ -394,6 +397,9 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Uri> task) {
                         if (task.isSuccessful()) {
+                            stopPlaying();
+                            mp = MediaPlayer.create(ChatActivity.this, R.raw.outgoing_message);
+                            mp.start();
                             Uri downloadUri = task.getResult();
                             myUri = downloadUri.toString();
 
@@ -463,7 +469,13 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
     }
-
+    private void stopPlaying() {
+        if (mp != null) {
+            mp.stop();
+            mp.release();
+            mp = null;
+        }
+    }
 
     @Override
     protected void onStart() {
@@ -474,7 +486,9 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         Messages messages = dataSnapshot.getValue(Messages.class);
-
+                        stopPlaying();
+                        mp = MediaPlayer.create(ChatActivity.this, R.raw.incoming_message);
+                        mp.start();
                         messagesList.add(messages);
                         messageAdapter.notifyDataSetChanged();
                         userMessagesList.smoothScrollToPosition(userMessagesList.getAdapter().getItemCount());
@@ -537,18 +551,12 @@ public class ChatActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         Toast.makeText(ChatActivity.this, "Message Sent Successfully...", Toast.LENGTH_SHORT).show();
 
-
-
-
-
-
-
                         try {
                             Jsoup.connect("https://fcm.googleapis.com/fcm/send")
                                     .userAgent("Mozilla")
                                     .header("Content-type", "application/json")
                                     .header("Authorization", "key=AIzaSyDKXlWHYXZJqeezKjXtrQM43x8AQd9Zgl4")
-                                    .requestBody("{\"notification\":{\"title\":\"" + "fullName" + "\",\"body\":\"" + messageText + "\"},\"to\" : \"" + "cpKrTF8HHII:APA91bGL67LlDUy9jPOQS--83btR2LGfsGHjM7fMNa1L2TI0NGfnOhAXgLaijrJ9D2BykEFRp_qGT-0KMbvFmA52RlJ0AJ6IJ5mZAAPQy4jL7AjdW8oF9hM6XsTzaExy8kGt5GTf8FpI" + "\"}")
+                                    .requestBody("{\"notification\":{\"title\":\"" + "Full Name" + "\",\"body\":\"" + messageText + "\"},\"to\" : \"" + deviceToken + "\"}")
                                     .post();
                         } catch (IOException e) {
                             e.printStackTrace();

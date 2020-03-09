@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.text.TextUtils;
 import android.util.Log;
@@ -39,6 +40,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -62,6 +64,47 @@ public class MainActivity extends AppCompatActivity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+
+
+
+
+        String rootPath= Environment.getExternalStorageDirectory().getAbsolutePath()+"/ChatElite/Media/";
+        File file=new File(rootPath);
+        if(!file.exists()){
+            file.mkdirs();
+        }
+
+        rootPath= Environment.getExternalStorageDirectory().getAbsolutePath()+"/ChatElite/Media/Images";
+        file=new File(rootPath);
+        if(!file.exists()){
+            file.mkdirs();
+        }
+
+
+        rootPath= Environment.getExternalStorageDirectory().getAbsolutePath()+"/ChatElite/Media/Documents";
+        file=new File(rootPath);
+        if(!file.exists()){
+            file.mkdirs();
+        }
+
+
+        rootPath= Environment.getExternalStorageDirectory().getAbsolutePath()+"/ChatElite/Media/Audios";
+        file=new File(rootPath);
+        if(!file.exists()){
+            file.mkdirs();
+        }
+
+
+        rootPath= Environment.getExternalStorageDirectory().getAbsolutePath()+"/ChatElite/Media/Videos";
+        file=new File(rootPath);
+        if(!file.exists()){
+            file.mkdirs();
+        }
+
+
+
+
+
 
 
         //startActivity(new Intent(MainActivity.this, VideoCall.class));
