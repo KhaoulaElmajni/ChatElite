@@ -611,8 +611,27 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         if (id == R.id.voice_call) {
-            //Intent phoneLoginIntent = new Intent(ChatActivity.this, VideoCall.class);
-            //startActivity(phoneLoginIntent);
+
+
+
+
+            try {
+                Jsoup.connect("https://fcm.googleapis.com/fcm/send")
+                        .userAgent("Mozilla")
+                        .header("Content-type", "application/json")
+                        .header("Authorization", "key=AIzaSyDKXlWHYXZJqeezKjXtrQM43x8AQd9Zgl4")
+                        .requestBody("{\"data\":{\"title\":\"" + "Full Name" + "\",\"Type\":\"" + "Voice" + "\"},\"to\" : \"" + deviceToken + "\"}")
+                        .post();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+
+            //todo:
+            Intent phoneLoginIntent = new Intent(ChatActivity.this, VoiceCall.class);
+            phoneLoginIntent.putExtra("recipientId",deviceToken);
+            startActivity(phoneLoginIntent);
             return true;
         }
 

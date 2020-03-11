@@ -136,7 +136,7 @@ public class ChatsFragment extends Fragment {
                                     chatIntent.putExtra("visit_user_id", usersIDs);
                                     chatIntent.putExtra("visit_user_name", retName);
                                     chatIntent.putExtra("visit_user_image", retImage[0]);
-                                    chatIntent.putExtra("device_token", holder.itemView.getTag().toString());
+                                    chatIntent.putExtra("device_token", device_token);
                                     chatIntent.putExtra("user_full_name", device_token);
                                     startActivity(chatIntent);
                                 }

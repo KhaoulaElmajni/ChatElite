@@ -22,16 +22,24 @@ import java.util.Objects;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
-  @Override
+    @Override
     public void onMessageReceived(final RemoteMessage remoteMessage) {
 
-      Handler handler = new Handler(getMainLooper());
+        Handler handler = new Handler(getMainLooper());
         handler.post(new Runnable() {
 
             @Override
             public void run() {
                 if (remoteMessage.getData().size() > 0) {
+                    Log.d("FCM", remoteMessage.getData().toString());
 
+                    if (remoteMessage.getData().get("Type").equals("Voice")) {
+
+                        Intent dialogIntent = new Intent(getApplicationContext(), VoiceCall.class);
+                        dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        dialogIntent.putExtra("id", remoteMessage.getData().get("to"));
+                        startActivity(dialogIntent);
+                    }
 
                 }
 
@@ -59,24 +67,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 /**
 
-                NotifyMe notifyMe = new NotifyMe.Builder(getApplicationContext())
-                        .title(remoteMessage.getNotification().getTitle())
-                        .content(remoteMessage.getNotification().getBody())
-                        .color(255,0,0,255)
-                        .led_color(255,255,255,255)
-                        .time(new Date())
-                        .key("test")
-                        .addAction(new Intent(),"Dismiss",true,false)
-                        .addAction(new Intent(),"Dismiss",true,false)
-                        .addAction(new Intent(),"Dismiss",true,false)
-                        .large_icon(R.mipmap.ic_launcher)
-                        .rrule("FREQ=MINUTELY;INTERVAL=5;COUNT=2")
-                        .build();
-
-
-
-**/
-
+ NotifyMe notifyMe = new NotifyMe.Builder(getApplicationContext())
+ .title(remoteMessage.getNotification().getTitle())
+ .content(remoteMessage.getNotification().getBody())
+ .color(255,0,0,255)
+ .led_color(255,255,255,255)
+ .time(new Date())
+ .key("test")
+ .addAction(new Intent(),"Dismiss",true,false)
+ .addAction(new Intent(),"Dismiss",true,false)
+ .addAction(new Intent(),"Dismiss",true,false)
+ .large_icon(R.mipmap.ic_launcher)
+ .rrule("FREQ=MINUTELY;INTERVAL=5;COUNT=2")
+ .build();
+ **/
 
 
             }
@@ -89,7 +93,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(String registrationToken) {
 
 
-        Log.d("Firebase #onNewToken registrationToken=" , registrationToken);
+        Log.d("Firebase #onNewToken registrationToken=", registrationToken);
 
         startService(new Intent(this, FcmTokenRegistrationService.class));
     }
