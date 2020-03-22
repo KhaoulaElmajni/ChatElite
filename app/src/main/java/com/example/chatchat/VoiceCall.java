@@ -30,7 +30,7 @@ import java.util.List;
 
 
 public class VoiceCall extends AppCompatActivity {
-    
+
     private static final String APP_KEY = "3bc70000-95f5-43a1-98d4-d534dbf16118";
     private static final String APP_SECRET = "m6WqWVPqNU+MdIQFLbtB5Q==";
     private static final String ENVIRONMENT = "clientapi.sinch.com";
