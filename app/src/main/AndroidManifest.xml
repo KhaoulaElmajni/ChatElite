@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.chatchat">
+    package="com.chatelite">
 
 
 
@@ -34,14 +34,14 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".ImageViewerActivity"
+            android:name=".activities.ImageViewer"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".activities.LoginByEmail"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".SplashScreen">
+        <activity android:name=".activities.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -49,45 +49,45 @@
         </activity>
 
         <activity
-            android:name=".ProfileActivity"
+            android:name=".activities.Profile"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".FindFriendsActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name=".activities.FindFriends"
+            android:parentActivityName=".activities.Main" />
 
         <activity
-            android:name=".MainActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name=".activities.Main"
+            android:parentActivityName=".activities.Main" />
 
 
         <activity
-            android:name=".VoiceCall"
+            android:name=".activities.VoiceCall"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".PhoneLoginActivity"
+            android:name=".activities.LoginByPhone"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".GroupChatActivity"
+            android:name=".activities.GroupDiscussion"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".SettingsActivity"
-            android:parentActivityName=".MainActivity"
+            android:name=".activities.Settings"
+            android:parentActivityName=".activities.Main"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".RegisterActivity"
+            android:name=".activities.Register"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ChatActivity"
+            android:name=".activities.Discussion"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".VideoCall"
+            android:name=".activities.VideoCall"
             android:screenOrientation="portrait" />
 
 
@@ -95,12 +95,12 @@
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
 
-        <service android:name=".MyFirebaseMessagingService">
+        <service android:name=".services.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".FcmTokenRegistrationService" />
+        <service android:name=".services.FcmTokenRegistrationService" />
 
     </application>
 
