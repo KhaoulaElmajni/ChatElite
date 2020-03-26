@@ -6,13 +6,13 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.Window;
 import android.view.WindowManager;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.chatelite.R;
 
 
 public class SplashScreen extends AppCompatActivity {
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

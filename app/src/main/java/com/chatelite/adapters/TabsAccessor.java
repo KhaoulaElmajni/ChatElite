@@ -5,13 +5,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.chatelite.fragments.GroupsFragment;
-import com.chatelite.fragments.RequestsFragment;
-import com.chatelite.fragments.ChatsFragment;
-import com.chatelite.fragments.ContactsFragment;
+import com.chatelite.fragments.Groups;
+import com.chatelite.fragments.Requests;
+import com.chatelite.fragments.Chats;
+import com.chatelite.fragments.Contacts;
 
-public class TabsAccessorAsadpter extends FragmentPagerAdapter {
-    public TabsAccessorAsadpter(FragmentManager fm) {
+public class TabsAccessor extends FragmentPagerAdapter {
+    public TabsAccessor(FragmentManager fm) {
         super(fm);
     }
 
@@ -19,16 +19,16 @@ public class TabsAccessorAsadpter extends FragmentPagerAdapter {
     public Fragment getItem(int i) {
         switch (i) {
             case 0:
-                ChatsFragment chatsFragment = new ChatsFragment();
+                Chats chatsFragment = new Chats();
                 return chatsFragment;
             case 1:
-                GroupsFragment groupsFragment = new GroupsFragment();
+                Groups groupsFragment = new Groups();
                 return groupsFragment;
             case 2:
-                ContactsFragment contactsFragment = new ContactsFragment();
+                Contacts contactsFragment = new Contacts();
                 return contactsFragment;
             case 3:
-                RequestsFragment requestsFragment = new RequestsFragment();
+                Requests requestsFragment = new Requests();
                 return requestsFragment;
             default:
                 return null;
@@ -47,13 +47,13 @@ public class TabsAccessorAsadpter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return "Chats";
+                return "Chat";
             case 1:
-                return "Groups";
+                return "Group";
             case 2:
                 return "Contact";
             case 3:
-                return "Requests";
+                return "Request";
             default:
                 return null;
         }

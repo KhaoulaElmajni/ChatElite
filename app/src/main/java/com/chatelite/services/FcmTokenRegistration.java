@@ -28,10 +28,10 @@ import java.util.HashMap;
  */
 
 
-public class FcmTokenRegistrationService extends IntentService {
+public class FcmTokenRegistration extends IntentService {
 
-    public FcmTokenRegistrationService() {
-        super("FcmTokenRegistrationService");
+    public FcmTokenRegistration() {
+        super("FcmTokenRegistration");
     }
 
     @Override

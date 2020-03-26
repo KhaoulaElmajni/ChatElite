@@ -27,7 +27,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 
-public class GroupsFragment extends Fragment {
+public class Groups extends Fragment {
 
     private View groupFragmentView;
     private ListView list_view;
@@ -35,7 +35,7 @@ public class GroupsFragment extends Fragment {
     private ArrayList<String> list_of_groups = new ArrayList<>();
     private DatabaseReference GroupRef;
 
-    public GroupsFragment() {
+    public Groups() {
         // Required empty public constructor
     }
 

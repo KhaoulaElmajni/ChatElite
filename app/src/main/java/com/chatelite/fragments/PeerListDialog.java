@@ -20,7 +20,7 @@ import com.chatelite.R;
 
 import java.util.ArrayList;
 
-public class PeerListDialogFragment extends DialogFragment
+public class PeerListDialog extends DialogFragment
 		implements AdapterView.OnItemClickListener {
 
 	public interface PeerListDialogFragmentListener {

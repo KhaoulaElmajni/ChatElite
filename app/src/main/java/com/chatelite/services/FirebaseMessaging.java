@@ -19,7 +19,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Objects;
 
-public class MyFirebaseMessagingService extends FirebaseMessagingService {
+public class FirebaseMessaging extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(final RemoteMessage remoteMessage) {
@@ -45,7 +45,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 if (remoteMessage.getNotification() != null) {
                     int requestID = (int) System.currentTimeMillis();
                     Intent notificationIntent = new Intent(getApplicationContext(), Main.class);
-                    PendingIntent contentIntent = PendingIntent.getActivity(MyFirebaseMessagingService.this, requestID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    PendingIntent contentIntent = PendingIntent.getActivity(FirebaseMessaging.this, requestID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                     NotificationManager notificationManager;
                     NotificationCompat.Builder builder;
                     NotificationChannel channel;
@@ -55,7 +55,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     int importance = NotificationManager.IMPORTANCE_DEFAULT;
                     channel = new NotificationChannel("1", name, importance);
                     channel.setDescription(description);
-                    builder = new NotificationCompat.Builder(MyFirebaseMessagingService.this, channel.getId())
+                    builder = new NotificationCompat.Builder(FirebaseMessaging.this, channel.getId())
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setContentTitle(Objects.requireNonNull(remoteMessage.getNotification()).getTitle())
                             .setContentText(Objects.requireNonNull(remoteMessage.getNotification()).getBody());
@@ -94,6 +94,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Log.d("Firebase #onNewToken registrationToken=", registrationToken);
 
-        startService(new Intent(this, FcmTokenRegistrationService.class));
+        startService(new Intent(this, FcmTokenRegistration.class));
     }
 }

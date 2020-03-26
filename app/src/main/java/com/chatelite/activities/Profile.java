@@ -3,9 +3,12 @@ package com.chatelite.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.chatelite.R;
@@ -19,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -49,17 +53,65 @@ public class Profile extends AppCompatActivity {
         senderUserID = mAuth.getCurrentUser().getUid();
 
 
-        userProfileImage = (CircleImageView) findViewById(R.id.visit_profile_image);
-        userProfileName = (TextView) findViewById(R.id.visit_user_name);
-        userProfileStatus = (TextView) findViewById(R.id.visit_profile_status);
-        SendMessageRequestButton = (Button) findViewById(R.id.send_message_request_button);
-        DeclineMessageRequestButton = (Button) findViewById(R.id.decline_message_request_button);
+        userProfileImage = findViewById(R.id.visit_profile_image);
+        userProfileName = findViewById(R.id.visit_user_name);
+        userProfileStatus = findViewById(R.id.visit_profile_status);
+        SendMessageRequestButton = findViewById(R.id.send_message_request_button);
+        DeclineMessageRequestButton = findViewById(R.id.decline_message_request_button);
 
         current_state = "new";
 
 
         retrieveUserInfo();
+
+
+
+
+        Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/font6.ttf");
+
+
+        RelativeLayout layout = findViewById(R.id.layout);
+        ArrayList<View> clds = getAllChildren(layout);
+        for (int i = 0; i < clds.size(); i += 1) {
+
+            if (clds.get(i) instanceof TextView) {
+                ((TextView) clds.get(i)).setTypeface(custom_font);
+            }
+
+            if (clds.get(i) instanceof Button) {
+                ((Button) clds.get(i)).setTypeface(custom_font);
+            }
+        }
+
+
+
     }
+
+
+
+    private ArrayList<View> getAllChildren(View v) {
+
+        if (!(v instanceof ViewGroup)) {
+            ArrayList<View> viewArrayList = new ArrayList<>();
+            viewArrayList.add(v);
+            return viewArrayList;
+        }
+        ArrayList<View> result = new ArrayList<>();
+        ViewGroup viewGroup = (ViewGroup) v;
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            View child = viewGroup.getChildAt(i);
+            ArrayList<View> viewArrayList = new ArrayList<>();
+            viewArrayList.add(v);
+            viewArrayList.addAll(getAllChildren(child));
+            result.addAll(viewArrayList);
+        }
+        return result;
+    }
+
+
+
+
+
 
     private void retrieveUserInfo() {
         UserRef.child(receiverUserID).addValueEventListener(new ValueEventListener() {

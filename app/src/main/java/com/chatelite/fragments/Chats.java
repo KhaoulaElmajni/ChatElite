@@ -37,11 +37,7 @@ import java.util.Calendar;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
-public class ChatsFragment extends Fragment {
+public class Chats extends Fragment {
     private View PrivateChatsView;
     private RecyclerView chatsList;
     private DatabaseReference ChatsRef, UsersRef;
@@ -49,7 +45,7 @@ public class ChatsFragment extends Fragment {
     private String currentUserID;
 
 
-    public ChatsFragment() {
+    public Chats() {
         // Required empty public constructor
     }
 
@@ -66,7 +62,7 @@ public class ChatsFragment extends Fragment {
 
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
-        chatsList = (RecyclerView) PrivateChatsView.findViewById(R.id.chats_list);
+        chatsList = PrivateChatsView.findViewById(R.id.chats_list);
         chatsList.setLayoutManager(new LinearLayoutManager(getContext()));
 
 

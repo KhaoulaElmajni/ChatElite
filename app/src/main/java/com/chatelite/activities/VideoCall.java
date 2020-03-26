@@ -28,7 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.chatelite.fragments.PeerListDialogFragment;
+import com.chatelite.fragments.PeerListDialog;
 import com.chatelite.R;
 
 import org.json.JSONArray;
@@ -562,9 +562,9 @@ else {
                 // Show IDs using DialogFragment
                 if (0 < _listPeerIds.size()) {
                     FragmentManager mgr = getFragmentManager();
-                    PeerListDialogFragment dialog = new PeerListDialogFragment();
+                    PeerListDialog dialog = new PeerListDialog();
                     dialog.setListener(
-                            new PeerListDialogFragment.PeerListDialogFragmentListener() {
+                            new PeerListDialog.PeerListDialogFragmentListener() {
                                 @Override
                                 public void onItemClick(final String item) {
                                     _handler.post(new Runnable() {

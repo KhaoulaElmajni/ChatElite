@@ -8,9 +8,7 @@
     tools:context=".activities.FindFriends">
     <include
         android:id="@+id/find_friends_toolbar"
-        layout="@layout/app_bar_layout"
-        >
-    </include>
+        layout="@layout/app_bar_layout" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/find_friends_recycler_list"
@@ -18,8 +16,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        />
-
+        android:layout_centerVertical="true" />
 
 </RelativeLayout>

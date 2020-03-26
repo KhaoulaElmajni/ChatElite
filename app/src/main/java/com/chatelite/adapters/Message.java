@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chatelite.R;
 import com.chatelite.activities.ImageViewer;
 import com.chatelite.activities.Main;
-import com.chatelite.models.Message;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,12 +32,12 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
-    private List<Message> userMessagesList;
+public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
+    private List<com.chatelite.models.Message> userMessagesList;
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef;
 
-    public MessageAdapter(List<Message> userMessagesList) {
+    public Message(List<com.chatelite.models.Message> userMessagesList) {
         this.userMessagesList = userMessagesList;
     }
 
@@ -74,7 +73,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @Override
     public void onBindViewHolder(@NonNull final MessageViewHolder messageViewHolder, final int position) {
         String messageSenderId = mAuth.getCurrentUser().getUid();
-        Message messages = userMessagesList.get(position);
+        com.chatelite.models.Message messages = userMessagesList.get(position);
 
         String fromUserID = messages.getFrom();
         String fromMessageType = messages.getType();

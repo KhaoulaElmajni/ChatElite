@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +43,6 @@ public class FindFriends extends AppCompatActivity {
         mToolbar = findViewById(R.id.find_friends_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Find Friends");
 
     }
@@ -61,6 +61,11 @@ public class FindFriends extends AppCompatActivity {
                 holder.userStatus.setText(model.getStatus());
                 Picasso.get().load(model.getImage()).placeholder(R.drawable.profile_image).into(holder.profileImage);
 
+                Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/font6.ttf");
+                holder.userName.setTypeface(custom_font);
+                holder.userStatus.setTypeface(custom_font);
+
+
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -77,7 +82,7 @@ public class FindFriends extends AppCompatActivity {
             @NonNull
             @Override
             public FindFriendsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.users_display_layout, viewGroup, false);
+                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.user_layout_find_friends, viewGroup, false);
                 FindFriendsViewHolder viewHolder = new FindFriendsViewHolder(view);
                 return viewHolder;
             }
@@ -95,7 +100,6 @@ public class FindFriends extends AppCompatActivity {
 
         public FindFriendsViewHolder(@NonNull View itemView) {
             super(itemView);
-
             userName = itemView.findViewById(R.id.user_profile_name);
             userStatus = itemView.findViewById(R.id.user_status);
             profileImage = itemView.findViewById(R.id.users_profile_image);

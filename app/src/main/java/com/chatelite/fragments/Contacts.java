@@ -1,6 +1,7 @@
 package com.chatelite.fragments;
 
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -29,40 +30,29 @@ import com.squareup.picasso.Picasso;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class ContactsFragment extends Fragment {
+public class Contacts extends Fragment {
 
     private View ContactsView;
     private RecyclerView myContactsList;
     private DatabaseReference ContactsRef, UsersRef;
-
     private FirebaseAuth mAuth;
     private String currentUserID;
 
-    public ContactsFragment() {
+    public Contacts() {
         // Required empty public constructor
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         ContactsView = inflater.inflate(R.layout.fragment_contacts, container, false);
-
-        myContactsList =  ContactsView.findViewById(R.id.contacts_list);
+        myContactsList = ContactsView.findViewById(R.id.contacts_list);
         myContactsList.setLayoutManager(new LinearLayoutManager(getContext()));
-
-
         mAuth = FirebaseAuth.getInstance();
         currentUserID = mAuth.getCurrentUser().getUid();
-
-
         ContactsRef = FirebaseDatabase.getInstance().getReference().child("Contact").child(currentUserID);
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-
-
         return ContactsView;
-
     }
 
     @Override
@@ -79,6 +69,11 @@ public class ContactsFragment extends Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
+
+
+                            Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/font6.ttf");
+                            holder.userName.setTypeface(custom_font);
+                            holder.userStatus.setTypeface(custom_font);
 
                             if (dataSnapshot.child("userState").hasChild("state")) {
                                 String state = dataSnapshot.child("userState").child("state").getValue().toString();
@@ -126,7 +121,7 @@ public class ContactsFragment extends Fragment {
             @NonNull
             @Override
             public ContactsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.users_display_layout, viewGroup, false);
+                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.user_layout_as_contact, viewGroup, false);
                 ContactsViewHolder viewHolder = new ContactsViewHolder(view);
                 return viewHolder;
             }

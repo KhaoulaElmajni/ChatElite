@@ -40,9 +40,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.chatelite.adapters.MessageAdapter;
+import com.chatelite.adapters.Message;
 import com.chatelite.R;
-import com.chatelite.models.Message;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -106,9 +105,9 @@ public class Discussion extends AppCompatActivity {
 
     private ImageView SendMessageButton, SendFilesButton;
     private EditText MessageInputText;
-    private final List<Message> messagesList = new ArrayList<>();
+    private final List<com.chatelite.models.Message> messagesList = new ArrayList<>();
     private LinearLayoutManager linearLayoutManager;
-    private MessageAdapter messageAdapter;
+    private Message messageAdapter;
     private RecyclerView userMessagesList;
 
 
@@ -260,7 +259,7 @@ while (!new File(mFileName).exists());
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        Message messages = dataSnapshot.getValue(Message.class);
+                        com.chatelite.models.Message messages = dataSnapshot.getValue(com.chatelite.models.Message.class);
                         stopPlaying();
                         mp = MediaPlayer.create(Discussion.this, R.raw.incoming_message);
                         mp.start();
@@ -500,7 +499,7 @@ while (!new File(mFileName).exists());
         }
         });
          **/
-        messageAdapter = new MessageAdapter(messagesList);
+        messageAdapter = new Message(messagesList);
 
         userMessagesList = (RecyclerView) findViewById(R.id.private_messages_list_of_users);
         linearLayoutManager = new LinearLayoutManager(this);

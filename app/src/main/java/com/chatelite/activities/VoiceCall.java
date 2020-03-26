@@ -39,26 +39,17 @@ public class VoiceCall extends AppCompatActivity {
     private Button button;
     private String callerId;
     private String recipientId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.voice_call);
-
-
         final SharedPreferences preferences = this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-
-
-
-
-
-
         Intent intent = getIntent();
-        callerId = preferences.getString("FcmToken","me");
+        callerId = preferences.getString("FcmToken", "me");
         recipientId = intent.getStringExtra("recipientId");
-
-
         sinchClient = Sinch.getSinchClientBuilder()
                 .context(this)
                 .userId(callerId)
@@ -92,8 +83,8 @@ public class VoiceCall extends AppCompatActivity {
 
         /**
 
-        Intent iin = getIntent();
-        Bundle b = iin.getExtras();
+         Intent iin = getIntent();
+         Bundle b = iin.getExtras();
 
 
 

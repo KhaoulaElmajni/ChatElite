@@ -18,6 +18,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.chatelite.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -27,11 +29,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -48,7 +55,7 @@ public class Settings extends AppCompatActivity {
     private StorageReference UserProfileImagesRef;
     private ProgressDialog loadingBar;
     private Toolbar SettingsToolbar;
-
+    private StorageTask uploadTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,38 +131,62 @@ public class Settings extends AppCompatActivity {
 
                 Uri resultUri = result.getUri();
 
-                StorageReference filePath = UserProfileImagesRef.child(currentUserID + ".jpg");
-                filePath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                //StorageReference filePath = UserProfileImagesRef.child(currentUserID + ".jpg");
+
+
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference storageRef = storage.getReference();
+
+// Create a reference to "mountains.jpg"
+                //StorageReference mountainsRef = storageRef.child(fileName);
+
+// Create a reference to 'images/mountains.jpg'
+                StorageReference mountainImagesRef = storageRef.child("CHATELITE" + "/PROFILES/" + resultUri.toString().split("/")[resultUri.toString().split("/").length-1]);
+
+                InputStream stream = null;
+                try {
+                    stream = new FileInputStream(new File( resultUri.getPath()));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                uploadTask = mountainImagesRef.putStream(stream);
+
+                uploadTask.addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(Settings.this, "Profile Image uploaded Successfully...", Toast.LENGTH_SHORT).show();
-//TODO :        final String downloadUri = task.getResult().getDownloadUrl().toString();
-                            final String downloadUri = task.getResult().toString();
+                    public void onFailure(@NonNull Exception exception) {
+                        Toast.makeText(Settings.this, "Failed", Toast.LENGTH_SHORT).show();
+                        String message = exception.toString();
+                        Toast.makeText(Settings.this, "ERROR: " + message, Toast.LENGTH_SHORT).show();
+                        loadingBar.dismiss();
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Toast.makeText(Settings.this, "Uploaded", Toast.LENGTH_SHORT).show();
 
 
-                            RootRef.child("Users").child(currentUserID).child("image").setValue(downloadUri)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
 
-                                                Toast.makeText(Settings.this, "Image saved in Database Successfully...", Toast.LENGTH_SHORT).show();
-                                                loadingBar.dismiss();
-                                            } else {
-                                                String message = task.getException().toString();
-                                                Toast.makeText(Settings.this, "ERROR : " + message, Toast.LENGTH_SHORT).show();
-                                                loadingBar.dismiss();
-                                            }
+                        RootRef.child("Users").child(currentUserID).child("image").setValue(taskSnapshot.getUploadSessionUri().toString())
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+
+                                            Toast.makeText(Settings.this, "Image saved in Database Successfully...", Toast.LENGTH_SHORT).show();
+                                            loadingBar.dismiss();
+                                        } else {
+                                            String message = task.getException().toString();
+                                            Toast.makeText(Settings.this, "ERROR : " + message, Toast.LENGTH_SHORT).show();
+                                            loadingBar.dismiss();
                                         }
-                                    });
-                        } else {
-                            String message = task.getException().toString();
-                            Toast.makeText(Settings.this, "ERROR: " + message, Toast.LENGTH_SHORT).show();
-                            loadingBar.dismiss();
-                        }
+                                    }
+                                });
                     }
                 });
+
+
+
             }
 
         }

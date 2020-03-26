@@ -30,7 +30,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.chatelite.R;
-import com.chatelite.adapters.TabsAccessorAsadpter;
+import com.chatelite.adapters.TabsAccessor;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
@@ -53,7 +53,7 @@ public class Main extends AppCompatActivity {
     private Toolbar mToolbar;
     private ViewPager myViewPager;
     private TabLayout myTabLayout;
-    private TabsAccessorAsadpter myTabsAccessorAsadpter;
+    private TabsAccessor myTabsAccessorAsadpter;
     private DatabaseReference RootRef;
 
     private FirebaseAuth mAuth;
@@ -152,7 +152,7 @@ public class Main extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("ChatElite");
         myViewPager = (ViewPager) findViewById(R.id.main_tabs_pager);
-        myTabsAccessorAsadpter = new TabsAccessorAsadpter(getSupportFragmentManager());
+        myTabsAccessorAsadpter = new TabsAccessor(getSupportFragmentManager());
         myViewPager.setAdapter(myTabsAccessorAsadpter);
         myTabLayout = (TabLayout) findViewById(R.id.main_tabs);
         myTabLayout.setupWithViewPager(myViewPager);
@@ -282,7 +282,8 @@ public class Main extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if ((dataSnapshot.child("name").exists())) {
-                    Toast.makeText(Main.this, "Welcome", Toast.LENGTH_SHORT).show();
+                   //TODO:
+                    //Toast.makeText(Main.this, "Welcome", Toast.LENGTH_SHORT).show();
                 } else {
                     SendUserToSettingsActivity();
                 }
