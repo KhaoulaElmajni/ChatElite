@@ -141,11 +141,11 @@ public class Settings extends AppCompatActivity {
                 //StorageReference mountainsRef = storageRef.child(fileName);
 
 // Create a reference to 'images/mountains.jpg'
-                StorageReference mountainImagesRef = storageRef.child("CHATELITE" + "/PROFILES/" + resultUri.toString().split("/")[resultUri.toString().split("/").length-1]);
+                StorageReference mountainImagesRef = storageRef.child("CHATELITE" + "/PROFILES/" + resultUri.toString().split("/")[resultUri.toString().split("/").length - 1]);
 
                 InputStream stream = null;
                 try {
-                    stream = new FileInputStream(new File( resultUri.getPath()));
+                    stream = new FileInputStream(new File(resultUri.getPath()));
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -167,24 +167,41 @@ public class Settings extends AppCompatActivity {
 
 
 
-                        RootRef.child("Users").child(currentUserID).child("image").setValue(taskSnapshot.getUploadSessionUri().toString())
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
+                        mountainImagesRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                RootRef.child("Users").child(currentUserID).child("image").setValue(uri.toString())
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
 
-                                            Toast.makeText(Settings.this, "Image saved in Database Successfully...", Toast.LENGTH_SHORT).show();
-                                            loadingBar.dismiss();
-                                        } else {
-                                            String message = task.getException().toString();
-                                            Toast.makeText(Settings.this, "ERROR : " + message, Toast.LENGTH_SHORT).show();
-                                            loadingBar.dismiss();
-                                        }
+                                                    Toast.makeText(Settings.this, "Image saved in Database Successfully...", Toast.LENGTH_SHORT).show();
+                                                    loadingBar.dismiss();
+                                                } else {
+                                                    String message = task.getException().toString();
+                                                    Toast.makeText(Settings.this, "ERROR : " + message, Toast.LENGTH_SHORT).show();
+                                                    loadingBar.dismiss();
+                                                }
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        // Toast.makeText(Settings.this, "Image saved in Database Successfully...", Toast.LENGTH_SHORT).show();
                                     }
                                 });
+
+                            }
+                        });
+
+
+
+
+
+
+
                     }
                 });
-
 
 
             }
