@@ -76,6 +76,7 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation(name: 'sinch-android-rtc', version: '+', ext: 'aar')
     implementation 'com.google.firebase:firebase-perf:19.0.5'
+    implementation 'com.devlomi.record-view:record-view:2.0.1'
 
 }
 repositories{

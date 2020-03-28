@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:id="@+id/layout"
     android:layout_height="match_parent"
-    android:background="#FAFAFA"
+    android:background="@drawable/default_wallpaper"
     tools:context=".activities.Discussion">
 
     <include
@@ -27,7 +27,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:background="#FAFAFA"
         android:orientation="horizontal">
 
         <ImageView

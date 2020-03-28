@@ -240,7 +240,7 @@ public class Discussion extends AppCompatActivity {
                         touched = true;
                         stopRecording();
 
-while (!new File(mFileName).exists());
+                        while (!new File(mFileName).exists()) ;
 
                         uploadFile("AUDIO", mFileName);
 
@@ -302,11 +302,11 @@ while (!new File(mFileName).exists());
         //StorageReference mountainsRef = storageRef.child(fileName);
 
 // Create a reference to 'images/mountains.jpg'
-        StorageReference mountainImagesRef = storageRef.child("CHATELITE" + "/AUDIOS/" + fileName.split("/")[fileName.split("/").length-1]);
+        StorageReference mountainImagesRef = storageRef.child("CHATELITE" + "/AUDIOS/" + fileName.split("/")[fileName.split("/").length - 1]);
 
         InputStream stream = null;
         try {
-            stream = new FileInputStream(new File( fileName));
+            stream = new FileInputStream(new File(fileName));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -389,7 +389,7 @@ while (!new File(mFileName).exists());
         setSupportActionBar(ChatToolbar);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        //actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowCustomEnabled(true);
 
         LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -499,9 +499,9 @@ while (!new File(mFileName).exists());
         }
         });
          **/
-        messageAdapter = new Message(messagesList);
+        messageAdapter = new Message(this,messagesList);
 
-        userMessagesList = (RecyclerView) findViewById(R.id.private_messages_list_of_users);
+        userMessagesList = findViewById(R.id.private_messages_list_of_users);
         linearLayoutManager = new LinearLayoutManager(this);
         userMessagesList.setLayoutManager(linearLayoutManager);
         userMessagesList.setAdapter(messageAdapter);
@@ -666,6 +666,13 @@ while (!new File(mFileName).exists());
                             if (state.equals("Online")) {
                                 userLastSeen.setText("Online");
                             } else if (state.equals("Offline")) {
+                                Calendar calendar = Calendar.getInstance();
+                                SimpleDateFormat currentDate = new SimpleDateFormat("dd/MM/yyyy");
+                                String current_Date = currentDate.format(calendar.getTime());
+                                if (current_Date.equals(date)) {
+                                    date = "Today";
+                                }
+
                                 userLastSeen.setText(date + " at " + time);
                             }
                         } else {
@@ -804,66 +811,66 @@ while (!new File(mFileName).exists());
         final String messageText = MessageInputText.getText().toString();
 
 
-            String messageSenderRef = "Message/" + messageSenderID + "/" + messageReceiverID;
-            String messageReceiverRef = "Message/" + messageReceiverID + "/" + messageSenderID;
+        String messageSenderRef = "Message/" + messageSenderID + "/" + messageReceiverID;
+        String messageReceiverRef = "Message/" + messageReceiverID + "/" + messageSenderID;
 
-            DatabaseReference userMessageKeyRef = RootRef.child("Message")
-                    .child(messageSenderID).child(messageReceiverID).push();
-            String messagePushID = userMessageKeyRef.getKey();
-            Map<String, String> messageTextBody = new HashMap<>();
-            messageTextBody.put("message", audioUrl);
-            messageTextBody.put("type", "text");
-            messageTextBody.put("from", messageSenderID);
-            messageTextBody.put("to", messageReceiverID);
-            messageTextBody.put("messageID", messagePushID);
-            messageTextBody.put("time", saveCurrentTime);
-            messageTextBody.put("date", saveCurrentDate);
-            messageTextBody.put("MessageState", "SENT");
-
-
-            Map messageBodyDetails = new HashMap();
-            messageBodyDetails.put(messageSenderRef + "/" + messagePushID, messageTextBody);
-            messageBodyDetails.put(messageReceiverRef + "/" + messagePushID, messageTextBody);
-
-            RootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
-                @Override
-                public void onComplete(@NonNull Task task) {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(Discussion.this, "Audio Sent Successfully", Toast.LENGTH_SHORT).show();
-
-                        try {
-                            Jsoup.connect("https://fcm.googleapis.com/fcm/send")
-                                    .userAgent("Mozilla")
-                                    .header("Content-type", "application/json")
-                                    .header("Authorization", "key=AIzaSyDKXlWHYXZJqeezKjXtrQM43x8AQd9Zgl4")
-                                    .requestBody("{\"notification\":{\"title\":\"" + "Full Name" + "\",\"body\":\"" + audioUrl + "\"},\"to\" : \"" + deviceToken + "\"}")
-                                    .post();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+        DatabaseReference userMessageKeyRef = RootRef.child("Message")
+                .child(messageSenderID).child(messageReceiverID).push();
+        String messagePushID = userMessageKeyRef.getKey();
+        Map<String, String> messageTextBody = new HashMap<>();
+        messageTextBody.put("message", audioUrl);
+        messageTextBody.put("type", "text");
+        messageTextBody.put("from", messageSenderID);
+        messageTextBody.put("to", messageReceiverID);
+        messageTextBody.put("messageID", messagePushID);
+        messageTextBody.put("time", saveCurrentTime);
+        messageTextBody.put("date", saveCurrentDate);
+        messageTextBody.put("MessageState", "SENT");
 
 
-                        //Since it has been sent successfully :
+        Map messageBodyDetails = new HashMap();
+        messageBodyDetails.put(messageSenderRef + "/" + messagePushID, messageTextBody);
+        messageBodyDetails.put(messageReceiverRef + "/" + messagePushID, messageTextBody);
 
-                        ContentValues contentValues = new ContentValues();
-                        //contentValues.put("MessageId", messageText);
-                        contentValues.put("MessageContent", audioUrl);
-                        contentValues.put("MessageState", "SENT");
-                        contentValues.put("MessageType", "TEXT");
-                        contentValues.put("Sender", messageSenderID);
-                        contentValues.put("Receiver", messageReceiverID);
-                        contentValues.put("SendingDate", saveCurrentDate);
-                        contentValues.put("SendingTime", saveCurrentTime);
-                        chatEliteDB.insert("Message", null, contentValues);
+        RootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
+            @Override
+            public void onComplete(@NonNull Task task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(Discussion.this, "Audio Sent Successfully", Toast.LENGTH_SHORT).show();
 
-
-                    } else {
-                        Toast.makeText(Discussion.this, "ERROR:", Toast.LENGTH_SHORT).show();
-
+                    try {
+                        Jsoup.connect("https://fcm.googleapis.com/fcm/send")
+                                .userAgent("Mozilla")
+                                .header("Content-type", "application/json")
+                                .header("Authorization", "key=AIzaSyDKXlWHYXZJqeezKjXtrQM43x8AQd9Zgl4")
+                                .requestBody("{\"notification\":{\"title\":\"" + "Full Name" + "\",\"body\":\"" + audioUrl + "\"},\"to\" : \"" + deviceToken + "\"}")
+                                .post();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
 
+
+                    //Since it has been sent successfully :
+
+                    ContentValues contentValues = new ContentValues();
+                    //contentValues.put("MessageId", messageText);
+                    contentValues.put("MessageContent", audioUrl);
+                    contentValues.put("MessageState", "SENT");
+                    contentValues.put("MessageType", "TEXT");
+                    contentValues.put("Sender", messageSenderID);
+                    contentValues.put("Receiver", messageReceiverID);
+                    contentValues.put("SendingDate", saveCurrentDate);
+                    contentValues.put("SendingTime", saveCurrentTime);
+                    chatEliteDB.insert("Message", null, contentValues);
+
+
+                } else {
+                    Toast.makeText(Discussion.this, "ERROR:", Toast.LENGTH_SHORT).show();
+
                 }
-            });
+
+            }
+        });
 
     }
 

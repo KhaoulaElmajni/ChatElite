@@ -116,9 +116,11 @@ public class Chats extends Fragment {
                                 } else if (state.equals("Offline")) {
                                     Calendar calendar = Calendar.getInstance();
                                     SimpleDateFormat currentDate = new SimpleDateFormat("dd/MM/yyyy");
-                                    String saveCurrentDate = currentDate.format(calendar.getTime());
-                                    if (saveCurrentDate.equals(date))
-                                        date = "Today";
+                                    String current_Date = currentDate.format(calendar.getTime());
+                                    if(current_Date.equals(date)){
+                                        date="Today";
+                                    }
+
                                     holder.lastMessageDate.setText(date + " at " + time);
                                 }
 

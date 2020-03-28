@@ -18,7 +18,7 @@
         android:visibility="gone"
         android:id="@+id/no_item_text"
         android:layout_below="@id/no_item_photo"
-        android:layout_width="200dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"

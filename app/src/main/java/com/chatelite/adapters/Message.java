@@ -1,9 +1,11 @@
 package com.chatelite.adapters;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chatelite.R;
+import com.chatelite.activities.Discussion;
 import com.chatelite.activities.ImageViewer;
 import com.chatelite.activities.Main;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,21 +39,28 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
     private List<com.chatelite.models.Message> userMessagesList;
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef;
+    Typeface custom_font;
 
-    public Message(List<com.chatelite.models.Message> userMessagesList) {
+    public Message(Context context, List<com.chatelite.models.Message> userMessagesList) {
         this.userMessagesList = userMessagesList;
+
+
+        custom_font = Typeface.createFromAsset(context.getAssets(), "fonts/Tajawal-Regular.ttf");
+
     }
 
     public class MessageViewHolder extends RecyclerView.ViewHolder {
-        public TextView senderMessageText, receiverMessageText;
+        public TextView senderMessageText, receiverMessageText, sentTime;
         public CircleImageView receiverProfileImage;
         public ImageView messageSenderPicture, messageReceiverPicture;
 
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
-            senderMessageText = (TextView) itemView.findViewById(R.id.sender_message_text);
-            receiverMessageText = (TextView) itemView.findViewById(R.id.receiver_message_text);
-            receiverProfileImage = (CircleImageView) itemView.findViewById(R.id.message_profile_image);
+
+            senderMessageText = itemView.findViewById(R.id.sender_message_text);
+            sentTime = itemView.findViewById(R.id.message_time);
+            receiverMessageText = itemView.findViewById(R.id.receiver_message_text);
+            receiverProfileImage = itemView.findViewById(R.id.message_profile_image);
             messageReceiverPicture = itemView.findViewById(R.id.message_receiver_image_view);
             messageSenderPicture = itemView.findViewById(R.id.message_sender_image_view);
 
@@ -106,19 +116,27 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
 
 
             if (fromUserID.equals(messageSenderId)) {
+
                 messageViewHolder.senderMessageText.setVisibility(View.VISIBLE);
                 messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_messages_layout);
                 messageViewHolder.senderMessageText.setTextColor(Color.BLACK);
-                messageViewHolder.senderMessageText.setText(messages.getMessage() + "\n\n" + messages.getTime() + " - " + messages.getDate());
+                messageViewHolder.senderMessageText.setText(messages.getMessage());
+
+                messageViewHolder.sentTime.setText(messages.getTime());
+
+                messageViewHolder.senderMessageText.setTypeface(custom_font);
+                messageViewHolder.sentTime.setTypeface(custom_font);
+
+
             } else {
 
                 messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
                 messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
-
-
                 messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_messages_layout);
                 messageViewHolder.receiverMessageText.setTextColor(Color.BLACK);
                 messageViewHolder.receiverMessageText.setText(messages.getMessage() + "\n\n" + messages.getTime() + " - " + messages.getDate());
+
+
             }
 
         } else if (fromMessageType.equals("image")) {

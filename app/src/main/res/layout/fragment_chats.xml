@@ -13,8 +13,6 @@
        android:id="@+id/chats_list"
        android:background="#FAFAFA"
        android:layout_alignParentStart="true"
-       android:layout_alignParentTop="true"
-
-       />
+       android:layout_alignParentTop="true" />
 
 </RelativeLayout>
