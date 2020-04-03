@@ -30,11 +30,15 @@
         >
     </item>
     <item
-        android:title="Create Group"
+        android:title="Create new group"
         android:id="@+id/main_create_group_option"
         app:showAsAction="never"
-        >
-    </item>
+        />
+    <item
+        android:title="Create new broadcast"
+        android:id="@+id/main_create_broadcast_option"
+        app:showAsAction="never"
+        />
     <item
         android:title="Block"
         android:id="@+id/main_logout_option"

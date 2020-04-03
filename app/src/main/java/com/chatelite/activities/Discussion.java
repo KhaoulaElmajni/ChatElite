@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,6 +43,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chatelite.adapters.Message;
 import com.chatelite.R;
+import com.devlomi.record_view.RecordButton;
+import com.devlomi.record_view.RecordView;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -88,30 +91,24 @@ public class Discussion extends AppCompatActivity {
     private static final String LOG_TAG = "AudioRecordTest";
     private static String mFileName = null;
     private String currentUserID;
-
     private MediaRecorder mRecorder = null;
-
     public static boolean isDiscussionActivityRunning = false;
     private MediaPlayer mPlayer = null;
-
     String senderName = "";
     private String messageReceiverID, messageReceiverName, messageReceiverImage, messageSenderID, deviceToken;
     private MediaPlayer mp;
     private TextView userName, userLastSeen;
     private CircleImageView userImage;
     private Toolbar ChatToolbar;
-
     private FirebaseAuth mAuth;
     private DatabaseReference RootRef;
-
-    private ImageView SendMessageButton, SendFilesButton;
+    private ImageButton SendMessageButton;
+    private ImageView SendFilesButton;
     private EditText MessageInputText;
     private final List<com.chatelite.models.Message> messagesList = new ArrayList<>();
     private LinearLayoutManager linearLayoutManager;
     private Message messageAdapter;
     private RecyclerView userMessagesList;
-
-
     private String saveCurrentTime, saveCurrentDate;
     private String checker = "", myUri = "";
     private StorageTask uploadTask;
@@ -291,6 +288,14 @@ public class Discussion extends AppCompatActivity {
                     }
                 });
 
+
+        //TODO:
+       /* RecordView recordView = findViewById(R.id.record_view);
+        RecordButton recordButton = findViewById(R.id.record_button);
+
+        //IMPORTANT
+        recordButton.setRecordView(recordView);
+*/
 
     }
 

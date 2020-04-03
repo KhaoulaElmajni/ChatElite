@@ -30,6 +30,7 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:visibility="gone"
             android:layout_gravity="center"
             android:id="@+id/send_files_btn"
             android:layout_width="30dp"
@@ -40,6 +41,7 @@
 
 
         <ImageView
+            android:visibility="gone"
             android:layout_marginLeft="6dp"
             android:id="@+id/record"
             android:layout_gravity="center"
@@ -51,32 +53,30 @@
             android:src="@drawable/mic_3" />
 
         <EditText
-            android:layout_marginBottom="4dp"
             android:layout_marginLeft="6dp"
             android:background="@drawable/message_layout"
             android:textColor="#000"
             android:id="@+id/input_message"
-            android:layout_width="220dp"
-            android:layout_height="40dp"
-            android:elevation="2dp"
+            android:layout_width="280dp"
+            android:layout_height="50dp"
+            android:elevation="8dp"
             android:textSize="18sp"
             android:layout_toStartOf="@+id/send_message_btn"
             android:layout_toEndOf="@+id/record"
             android:hint=""
             android:padding="4dp" />
 
-        <ImageButton
-            android:src="@drawable/ic_send_black_24dp"
+        <ImageView
+            android:visibility="gone"
             android:layout_marginLeft="6dp"
             android:id="@+id/send_message_btn"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:padding="2dp"
             android:layout_alignParentEnd="true"
-            android:background="@drawable/round_button" />
+            android:src="@drawable/send_3" />
 
     </LinearLayout>
-    <!--
     <com.devlomi.record_view.RecordView
         android:id="@+id/record_view"
         android:layout_width="match_parent"
@@ -102,5 +102,4 @@
         android:background="@drawable/record_background"
         android:scaleType="centerInside"
         app:mic_icon="@drawable/recv_ic_mic_white" />
-        -->
 </RelativeLayout>

@@ -229,9 +229,9 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
 
 
         if (fromUserID.equals(messageSenderId)) {
-            messageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            messageViewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public void onClick(View view) {
+                public boolean onLongClick(View view) {
                     if (userMessagesList.get(position).getType().equals("pdf") || userMessagesList.get(position).getType().equals("docx")) {
                         CharSequence options[] = new CharSequence[]{
                                 "Delete For me",
@@ -318,14 +318,15 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
                         });
                         builder.show();
                     }
+                    return false;
                 }
             });
         } else {
 
 
-            messageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            messageViewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public void onClick(View view) {
+                public boolean onLongClick(View view) {
                     if (userMessagesList.get(position).getType().equals("pdf") || userMessagesList.get(position).getType().equals("docx")) {
                         CharSequence options[] = new CharSequence[]{
                                 "Delete For me",
@@ -395,6 +396,7 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
                         });
                         builder.show();
                     }
+                    return false;
                 }
             });
 
@@ -446,8 +448,8 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
         final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
         rootRef.child("Message").child(userMessagesList.get(position).getTo())
                 .child(userMessagesList.get(position).getFrom())
-                .child(userMessagesList.get(position).getMessageID())
-                .removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                .child(userMessagesList.get(position).getMessageID()).child("message")
+                .setValue("This message has been deleted !").addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
@@ -455,7 +457,8 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
                     rootRef.child("Message").child(userMessagesList.get(position).getFrom())
                             .child(userMessagesList.get(position).getTo())
                             .child(userMessagesList.get(position).getMessageID())
-                            .removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            .child("message")
+                            .setValue("This message has been deleted !").addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {

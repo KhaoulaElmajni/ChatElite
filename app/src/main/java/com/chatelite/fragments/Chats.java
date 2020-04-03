@@ -1,22 +1,29 @@
 package com.chatelite.fragments;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.MotionEventCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chatelite.R;
 import com.chatelite.activities.Discussion;
@@ -162,6 +169,94 @@ public class Chats extends Fragment {
                             });
 
 
+                            CountDownTimer countDownTimer = new CountDownTimer(500, 500) {
+
+                                public void onTick(long millisUntilFinished) {
+
+                                }
+
+                                public void onFinish() {
+                                    //Toast.makeText(getActivity(), "Long preess", Toast.LENGTH_SHORT).show();
+
+                                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+                                    builder1.setMessage("Write your message here.");
+                                    builder1.setCancelable(true);
+
+                                    builder1.setPositiveButton(
+                                            "Delete chat",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+
+                                    builder1.setNegativeButton(
+                                            "Archive Chat",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+
+                                    AlertDialog alert11 = builder1.create();
+                                    alert11.show();
+
+                                }
+
+                            };
+
+
+
+                            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                                @Override
+                                public boolean onLongClick(View v) {
+                                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+                                    builder1.setMessage("Write your message here.");
+                                    builder1.setCancelable(true);
+
+                                    builder1.setPositiveButton(
+                                            "Delete chat",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+
+                                    builder1.setNegativeButton(
+                                            "Archive Chat",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+
+                                    AlertDialog alert11 = builder1.create();
+                                    alert11.show();
+                                    return false;
+                                }
+                            });
+
+                            //TODO:
+                            /*holder.theLayout.setOnTouchListener(new View.OnTouchListener() {
+                                public boolean onTouch(View v, MotionEvent event) {
+                                    switch (event.getAction()) {
+                                        case MotionEvent.ACTION_DOWN:
+                                            countDownTimer.start();
+                                            break;
+
+                                        case MotionEvent.ACTION_MOVE:
+
+                                            break;
+
+                                        case MotionEvent.ACTION_UP:
+                                            countDownTimer.cancel();
+                                            break;
+                                    }
+                                    return true;
+                                }
+                            });*/
+
+
                             holder.itemView.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -235,9 +330,11 @@ public class Chats extends Fragment {
     public static class ChatsViewHolder extends RecyclerView.ViewHolder {
         CircleImageView profileImage;
         TextView userLastMessage, userName, lastMessageDate;
+        LinearLayout theLayout;
 
         public ChatsViewHolder(@NonNull View itemView) {
             super(itemView);
+            theLayout = itemView.findViewById(R.id.the_layout);
             profileImage = itemView.findViewById(R.id.users_profile_image);
             userLastMessage = itemView.findViewById(R.id.user_status);
             userName = itemView.findViewById(R.id.user_profile_name);
