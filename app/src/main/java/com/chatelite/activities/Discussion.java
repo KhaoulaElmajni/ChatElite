@@ -48,6 +48,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -86,11 +87,11 @@ public class Discussion extends AppCompatActivity {
     boolean touched = true;
     private static final String LOG_TAG = "AudioRecordTest";
     private static String mFileName = null;
-
+    private String currentUserID;
 
     private MediaRecorder mRecorder = null;
 
-
+    public static boolean isDiscussionActivityRunning = false;
     private MediaPlayer mPlayer = null;
 
 
@@ -499,7 +500,7 @@ public class Discussion extends AppCompatActivity {
         }
         });
          **/
-        messageAdapter = new Message(this,messagesList);
+        messageAdapter = new Message(this, messagesList);
 
         userMessagesList = findViewById(R.id.private_messages_list_of_users);
         linearLayoutManager = new LinearLayoutManager(this);
@@ -633,7 +634,7 @@ public class Discussion extends AppCompatActivity {
                                 public void onComplete(@NonNull Task task) {
                                     if (task.isSuccessful()) {
                                         loadingBar.dismiss();
-                                        Toast.makeText(Discussion.this, "Message Sent Successfully...", Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(Discussion.this, "Message Sent Successfully...", Toast.LENGTH_SHORT).show();
 
                                     } else {
                                         loadingBar.dismiss();
@@ -669,8 +670,16 @@ public class Discussion extends AppCompatActivity {
                                 Calendar calendar = Calendar.getInstance();
                                 SimpleDateFormat currentDate = new SimpleDateFormat("dd/MM/yyyy");
                                 String current_Date = currentDate.format(calendar.getTime());
+
+                                calendar.add(Calendar.DATE, -1);
+                                SimpleDateFormat yesterdayDate = new SimpleDateFormat("dd/MM/yyyy");
+                                String yesterday_Date = yesterdayDate.format(calendar.getTime());
+
+
                                 if (current_Date.equals(date)) {
                                     date = "Today";
+                                } else if (yesterday_Date.equals(date)) {
+                                    date = "Yesterday";
                                 }
 
                                 userLastSeen.setText(date + " at " + time);
@@ -698,7 +707,17 @@ public class Discussion extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        isDiscussionActivityRunning = true;
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            Log.d("ChatElite", "null");
+            SendUserToLoginActivity();
 
+        } else {
+            Log.d("ChatElite", "not null");
+            UpdateUserStatus("Online");
+            VerifyUserExistance();
+        }
         RootRef.child("Message").child(messageSenderID).child(messageReceiverID)
                 .addChildEventListener(new ChildEventListener() {
                     @Override
@@ -767,7 +786,7 @@ public class Discussion extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task task) {
                     if (task.isSuccessful()) {
-                        Toast.makeText(Discussion.this, "Message Sent Successfully...", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(Discussion.this, "Message Sent Successfully...", Toast.LENGTH_SHORT).show();
 
                         try {
                             Jsoup.connect("https://fcm.googleapis.com/fcm/send")
@@ -918,4 +937,89 @@ public class Discussion extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isDiscussionActivityRunning = false;
+
+        if (!Main.isMainActivityRunning) {
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser != null) {
+                UpdateUserStatus("Offline");
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        isDiscussionActivityRunning = false;
+
+        if (!Main.isMainActivityRunning) {
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser != null) {
+                UpdateUserStatus("Offline");
+            }
+        }
+
+    }
+
+    private void VerifyUserExistance() {
+        String currentUserID = mAuth.getCurrentUser().getUid();
+        RootRef.child("Users").child(currentUserID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if ((dataSnapshot.child("name").exists())) {
+                    //TODO:
+                    //Toast.makeText(Main.this, "Welcome", Toast.LENGTH_SHORT).show();
+                } else {
+                    SendUserToSettingsActivity();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+
+        });
+    }
+
+    private void SendUserToSettingsActivity() {
+        Intent settingsIntent = new Intent(getBaseContext(), Settings.class);
+        startActivity(settingsIntent);
+    }
+
+    private void SendUserToLoginActivity() {
+        Intent loginIntent = new Intent(getBaseContext(), LoginByEmail.class);
+        loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(loginIntent);
+        finish();
+    }
+
+    private void UpdateUserStatus(String state) {
+        String saveCurrentTime, saveCurrentDate;
+        Calendar calendar = Calendar.getInstance();
+
+        SimpleDateFormat currentDate = new SimpleDateFormat("dd/MM/yyyy");
+        saveCurrentDate = currentDate.format(calendar.getTime());
+
+
+        SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm a");
+        saveCurrentTime = currentTime.format(calendar.getTime());
+
+        HashMap<String, Object> onlineStateMap = new HashMap<>();
+        onlineStateMap.put("time", saveCurrentTime);
+        onlineStateMap.put("date", saveCurrentDate);
+        onlineStateMap.put("state", state);
+
+        currentUserID = mAuth.getCurrentUser().getUid();
+
+        RootRef.child("Users").child(currentUserID).child("userState")
+                .updateChildren(onlineStateMap);
+    }
+
 }

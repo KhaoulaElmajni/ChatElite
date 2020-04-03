@@ -35,10 +35,6 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class Requests extends Fragment {
     private View RequestsFragmentView;
     private RecyclerView myRequestsList;
@@ -46,17 +42,9 @@ public class Requests extends Fragment {
     private FirebaseAuth mAuth;
     private String currentUserID;
 
-    public Requests() {
-        // Required empty public constructor
-    }
-
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         RequestsFragmentView = inflater.inflate(R.layout.fragment_requests, container, false);
-
         mAuth = FirebaseAuth.getInstance();
         currentUserID = mAuth.getCurrentUser().getUid();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
@@ -64,7 +52,6 @@ public class Requests extends Fragment {
         ContactsRef = FirebaseDatabase.getInstance().getReference().child("Contact");
         myRequestsList = RequestsFragmentView.findViewById(R.id.chat_request_list);
         myRequestsList.setLayoutManager(new LinearLayoutManager(getContext()));
-
         return RequestsFragmentView;
     }
 
@@ -74,6 +61,16 @@ public class Requests extends Fragment {
 
         FirebaseRecyclerOptions<Contact> options = new FirebaseRecyclerOptions.Builder<Contact>()
                 .setQuery(ChatRequestsRef.child(currentUserID), Contact.class).build();
+
+
+        myRequestsList.setVisibility(View.GONE);
+        ImageView photo = RequestsFragmentView.findViewById(R.id.no_item_photo);
+        TextView text = RequestsFragmentView.findViewById(R.id.no_item_text);
+        photo.setVisibility(View.VISIBLE);
+        text.setVisibility(View.VISIBLE);
+
+        Typeface  custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/font6.ttf");
+        text.setTypeface(custom_font);
 
 
         FirebaseRecyclerAdapter<Contact, RequsestsViewHolder> adapter = new
@@ -93,12 +90,25 @@ public class Requests extends Fragment {
                         final String list_user_id = getRef(position).getKey();
                         DatabaseReference getTypeRef = getRef(position).child("request_type").getRef();
 
+
+
+
+
+
                         getTypeRef.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.exists()) {
+
+                                    //TODO :
+                                    myRequestsList.setVisibility(View.VISIBLE);
+                                    ImageView photo = RequestsFragmentView.findViewById(R.id.no_item_photo);
+                                    TextView text = RequestsFragmentView.findViewById(R.id.no_item_text);
+                                    photo.setVisibility(View.GONE);
+                                    text.setVisibility(View.GONE);
+
+
                                     String type = dataSnapshot.getValue().toString();
-                                    // Log.d("estsb",type);
 
                                     if (type.equals("received")) {
                                         UsersRef.child(list_user_id).addValueEventListener(new ValueEventListener() {
@@ -120,7 +130,6 @@ public class Requests extends Fragment {
                                                 holder.userStatus.setText("Wants to connect with you");
 
 
-
                                                 Button accept = holder.AcceptButton;
                                                 Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/font6.ttf");
                                                 accept.setTypeface(custom_font);
@@ -128,39 +137,39 @@ public class Requests extends Fragment {
                                                     @Override
                                                     public void onClick(View v) {
 
-                                                            ContactsRef.child(list_user_id).child(currentUserID).child("Contact")
-                                                                    .setValue("Saved").addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                    if (task.isSuccessful()) {
-                                                                        ContactsRef.child(currentUserID).child(list_user_id).child("Contact")
-                                                                                .setValue("Saved").addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                            @Override
-                                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                                if (task.isSuccessful()) {
-                                                                                    ChatRequestsRef.child(list_user_id).child(currentUserID)
-                                                                                            .removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                        @Override
-                                                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                                                            if (task.isSuccessful()) {
-                                                                                                ChatRequestsRef.child(currentUserID).child(list_user_id)
-                                                                                                        .removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                                    @Override
-                                                                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                                                                        if (task.isSuccessful()) {
-                                                                                                            Toast.makeText(getContext(), "New Contact Saved...", Toast.LENGTH_SHORT).show();
-                                                                                                        }
+                                                        ContactsRef.child(list_user_id).child(currentUserID).child("Contact")
+                                                                .setValue("Saved").addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    ContactsRef.child(currentUserID).child(list_user_id).child("Contact")
+                                                                            .setValue("Saved").addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                                            if (task.isSuccessful()) {
+                                                                                ChatRequestsRef.child(list_user_id).child(currentUserID)
+                                                                                        .removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                    @Override
+                                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                                        if (task.isSuccessful()) {
+                                                                                            ChatRequestsRef.child(currentUserID).child(list_user_id)
+                                                                                                    .removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                @Override
+                                                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                                                    if (task.isSuccessful()) {
+                                                                                                        Toast.makeText(getContext(), "New Contact Saved...", Toast.LENGTH_SHORT).show();
                                                                                                     }
-                                                                                                });
-                                                                                            }
+                                                                                                }
+                                                                                            });
                                                                                         }
-                                                                                    });
-                                                                                }
+                                                                                    }
+                                                                                });
                                                                             }
-                                                                        });
-                                                                    }
+                                                                        }
+                                                                    });
                                                                 }
-                                                            });
+                                                            }
+                                                        });
 
 
                                                     }
@@ -174,23 +183,23 @@ public class Requests extends Fragment {
                                                     @Override
                                                     public void onClick(View v) {
 
-                                                            ChatRequestsRef.child(list_user_id).child(currentUserID)
-                                                                    .removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                    if (task.isSuccessful()) {
-                                                                        ChatRequestsRef.child(currentUserID).child(list_user_id)
-                                                                                .removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                            @Override
-                                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                                if (task.isSuccessful()) {
-                                                                                    Toast.makeText(getContext(), "Contact Deleted...", Toast.LENGTH_SHORT).show();
-                                                                                }
+                                                        ChatRequestsRef.child(list_user_id).child(currentUserID)
+                                                                .removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    ChatRequestsRef.child(currentUserID).child(list_user_id)
+                                                                            .removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                                            if (task.isSuccessful()) {
+                                                                                Toast.makeText(getContext(), "Contact Deleted...", Toast.LENGTH_SHORT).show();
                                                                             }
-                                                                        });
-                                                                    }
+                                                                        }
+                                                                    });
                                                                 }
-                                                            });
+                                                            }
+                                                        });
 
                                                     }
                                                 });
@@ -204,7 +213,7 @@ public class Requests extends Fragment {
                                                         builder.setItems(options, new DialogInterface.OnClickListener() {
                                                             @Override
                                                             public void onClick(DialogInterface dialogInterface, int i) {
-                                                           //TODO:
+                                                                //TODO:
                                                             }
                                                         });
 
@@ -301,18 +310,15 @@ public class Requests extends Fragment {
                                     }
 
 
-                                }
-
-
-                                else{
+                                } else {
                                     myRequestsList.setVisibility(View.GONE);
-                                    ImageView photo =  RequestsFragmentView.findViewById(R.id.no_item_photo);
-                                    TextView text =  RequestsFragmentView.findViewById(R.id.no_item_text);
+                                    ImageView photo = RequestsFragmentView.findViewById(R.id.no_item_photo);
+                                    TextView text = RequestsFragmentView.findViewById(R.id.no_item_text);
                                     photo.setVisibility(View.VISIBLE);
                                     text.setVisibility(View.VISIBLE);
 
                                     Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/font6.ttf");
-                                   text.setTypeface(custom_font);
+                                    text.setTypeface(custom_font);
                                 }
                             }
 

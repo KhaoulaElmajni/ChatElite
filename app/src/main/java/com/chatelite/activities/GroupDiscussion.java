@@ -57,17 +57,12 @@ public class GroupDiscussion extends AppCompatActivity {
         GetUserInfo();
 
         SendMessageButton.setOnClickListener(new View.OnClickListener() {
-            //iciiiiiiii
-            //iciiiiii
-            //iciiiiiiiiiiiiiiiiiii
 
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
                 SaveMessageInfoToDataBase();
-
                 userMessageInput.setText("");
-
                 mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
 
             }
@@ -116,13 +111,13 @@ public class GroupDiscussion extends AppCompatActivity {
 
 
     private void InitializeFields() {
-        mToolbar = (Toolbar) findViewById(R.id.group_chat_bar_layout);
+        mToolbar = findViewById(R.id.group_chat_bar_layout);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(currentGroupName);
-        SendMessageButton = (ImageButton) findViewById(R.id.send_message_button);
-        userMessageInput = (EditText) findViewById(R.id.input_group_message);
-        displayTextMessages = (TextView) findViewById(R.id.group_chat_text_display);
-        mScrollView = (ScrollView) findViewById(R.id.my_scroll_view);
+        SendMessageButton = findViewById(R.id.send_message_button);
+        userMessageInput = findViewById(R.id.input_group_message);
+        displayTextMessages = findViewById(R.id.group_chat_text_display);
+        mScrollView = findViewById(R.id.my_scroll_view);
     }
 
     private void GetUserInfo() {
@@ -141,9 +136,6 @@ public class GroupDiscussion extends AppCompatActivity {
         });
     }
 
-    //ici si une erreur occured
-    //ici!!!!
-    //iciiiiiii
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void SaveMessageInfoToDataBase() {
         String messageKey = GroupNameRef.push().getKey();

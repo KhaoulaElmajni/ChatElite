@@ -50,19 +50,21 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
     }
 
     public class MessageViewHolder extends RecyclerView.ViewHolder {
-        public TextView senderMessageText, receiverMessageText, sentTime;
-        public CircleImageView receiverProfileImage;
-        public ImageView messageSenderPicture, messageReceiverPicture;
+        public TextView senderMessageText, receiverMessageText, sentTime, secondSentTime;
+        //public CircleImageView receiverProfileImage;
+        public ImageView messageSenderPicture, messageReceiverPicture,seen;
 
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
 
             senderMessageText = itemView.findViewById(R.id.sender_message_text);
             sentTime = itemView.findViewById(R.id.message_time);
+            secondSentTime = itemView.findViewById(R.id.second_message_time);
             receiverMessageText = itemView.findViewById(R.id.receiver_message_text);
-            receiverProfileImage = itemView.findViewById(R.id.message_profile_image);
+            //receiverProfileImage = itemView.findViewById(R.id.message_profile_image);
             messageReceiverPicture = itemView.findViewById(R.id.message_receiver_image_view);
             messageSenderPicture = itemView.findViewById(R.id.message_sender_image_view);
+            seen = itemView.findViewById(R.id.seen);
 
         }
     }
@@ -96,7 +98,7 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
                 if (dataSnapshot.hasChild("image")) {
                     String receiverImage = dataSnapshot.child("image").getValue().toString();
 
-                    Picasso.get().load(receiverImage).placeholder(R.drawable.profile_image).into(messageViewHolder.receiverProfileImage);
+                    //Picasso.get().load(receiverImage).placeholder(R.drawable.profile_image).into(messageViewHolder.receiverProfileImage);
                 }
             }
 
@@ -107,7 +109,7 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
         });
 
         messageViewHolder.receiverMessageText.setVisibility(View.GONE);
-        messageViewHolder.receiverProfileImage.setVisibility(View.GONE);
+        //messageViewHolder.receiverProfileImage.setVisibility(View.GONE);
         messageViewHolder.senderMessageText.setVisibility(View.GONE);
         messageViewHolder.messageSenderPicture.setVisibility(View.GONE);
         messageViewHolder.messageReceiverPicture.setVisibility(View.GONE);
@@ -118,6 +120,7 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
             if (fromUserID.equals(messageSenderId)) {
 
                 messageViewHolder.senderMessageText.setVisibility(View.VISIBLE);
+                messageViewHolder.secondSentTime.setVisibility(View.INVISIBLE);
                 messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_messages_layout);
                 messageViewHolder.senderMessageText.setTextColor(Color.BLACK);
                 messageViewHolder.senderMessageText.setText(messages.getMessage());
@@ -129,14 +132,18 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
 
 
             } else {
-
-                messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                //TODO :
+                FirebaseDatabase.getInstance().getReference().child("Message").child(fromUserID).child(messageSenderId).child("MessageState").setValue("DELIVERED");
+                //messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
                 messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
+                messageViewHolder.sentTime.setVisibility(View.INVISIBLE);
+                messageViewHolder.seen.setVisibility(View.INVISIBLE);
                 messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_messages_layout);
                 messageViewHolder.receiverMessageText.setTextColor(Color.BLACK);
-                messageViewHolder.receiverMessageText.setText(messages.getMessage() + "\n\n" + messages.getTime() + " - " + messages.getDate());
-
-
+                messageViewHolder.receiverMessageText.setTypeface(custom_font);
+                messageViewHolder.secondSentTime.setText(messages.getTime());
+                messageViewHolder.receiverMessageText.setText(messages.getMessage());
+                messageViewHolder.secondSentTime.setTypeface(custom_font);
             }
 
         } else if (fromMessageType.equals("image")) {
@@ -145,7 +152,7 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
 
                 Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageSenderPicture);
             } else {
-                messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                //messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
                 messageViewHolder.messageReceiverPicture.setVisibility(View.VISIBLE);
 
                 Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageReceiverPicture);
@@ -158,7 +165,7 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
                         .into(messageViewHolder.messageSenderPicture);
 
             } else {
-                messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+               // messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
                 messageViewHolder.messageReceiverPicture.setVisibility(View.VISIBLE);
 
                 Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/chatchat-da7fb.appspot.com/o/Image%20Files%2Ffile.png?alt=media&token=5a7c0cfe-1ef2-4f2d-a07e-57cdb18f30a6")

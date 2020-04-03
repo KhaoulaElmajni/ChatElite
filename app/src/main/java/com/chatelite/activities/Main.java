@@ -31,6 +31,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.chatelite.R;
 import com.chatelite.adapters.TabsAccessor;
+import com.chatelite.models.Group;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
@@ -55,7 +56,7 @@ public class Main extends AppCompatActivity {
     private TabLayout myTabLayout;
     private TabsAccessor myTabsAccessorAsadpter;
     private DatabaseReference RootRef;
-
+    public static boolean isMainActivityRunning;
     private FirebaseAuth mAuth;
 
     private String currentUserID;
@@ -66,7 +67,6 @@ public class Main extends AppCompatActivity {
         //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.main);
-
 
 
         ActivityCompat.requestPermissions(Main.this,
@@ -85,62 +85,52 @@ public class Main extends AppCompatActivity {
                 1);
 
 
-
-
-        Intent iin= getIntent();
+        Intent iin = getIntent();
         Bundle b = iin.getExtras();
 
-        if(b!=null)
-        {
-            String j =(String) b.get("Why");
-         if(j.equals("Call")){
-             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-             Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-             r.play();
-         }
+        if (b != null) {
+            String j = (String) b.get("Why");
+            if (j.equals("Call")) {
+                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+                Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                r.play();
+            }
 
         }
 
 
-
-
-        String rootPath= Environment.getExternalStorageDirectory().getAbsolutePath()+"/ChatElite/Media/";
-        File file=new File(rootPath);
-        if(!file.exists()){
+        String rootPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/ChatElite/Media/";
+        File file = new File(rootPath);
+        if (!file.exists()) {
             file.mkdirs();
         }
 
-        rootPath= Environment.getExternalStorageDirectory().getAbsolutePath()+"/ChatElite/Media/Images";
-        file=new File(rootPath);
-        if(!file.exists()){
-            file.mkdirs();
-        }
-
-
-        rootPath= Environment.getExternalStorageDirectory().getAbsolutePath()+"/ChatElite/Media/Documents";
-        file=new File(rootPath);
-        if(!file.exists()){
+        rootPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/ChatElite/Media/Images";
+        file = new File(rootPath);
+        if (!file.exists()) {
             file.mkdirs();
         }
 
 
-        rootPath= Environment.getExternalStorageDirectory().getAbsolutePath()+"/ChatElite/Media/Audios";
-        file=new File(rootPath);
-        if(!file.exists()){
+        rootPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/ChatElite/Media/Documents";
+        file = new File(rootPath);
+        if (!file.exists()) {
             file.mkdirs();
         }
 
 
-        rootPath= Environment.getExternalStorageDirectory().getAbsolutePath()+"/ChatElite/Media/Videos";
-        file=new File(rootPath);
-        if(!file.exists()){
+        rootPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/ChatElite/Media/Audios";
+        file = new File(rootPath);
+        if (!file.exists()) {
             file.mkdirs();
         }
 
 
-
-
-
+        rootPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/ChatElite/Media/Videos";
+        file = new File(rootPath);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
 
 
         //startActivity(new Intent(Main.this, VideoCall.class));
@@ -242,7 +232,7 @@ public class Main extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
+isMainActivityRunning = true;
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
             Log.d("ChatElite", "null");
@@ -259,9 +249,12 @@ public class Main extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            UpdateUserStatus("Offline");
+        isMainActivityRunning = false;
+        if (!Discussion.isDiscussionActivityRunning) {
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser != null) {
+                UpdateUserStatus("Offline");
+            }
         }
     }
 
@@ -269,11 +262,13 @@ public class Main extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            UpdateUserStatus("Offline");
+        isMainActivityRunning = false;
+        if (!Discussion.isDiscussionActivityRunning) {
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser != null) {
+                UpdateUserStatus("Offline");
+            }
         }
-
     }
 
     private void VerifyUserExistance() {
@@ -282,7 +277,7 @@ public class Main extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if ((dataSnapshot.child("name").exists())) {
-                   //TODO:
+                    //TODO:
                     //Toast.makeText(Main.this, "Welcome", Toast.LENGTH_SHORT).show();
                 } else {
                     SendUserToSettingsActivity();
@@ -354,7 +349,11 @@ public class Main extends AppCompatActivity {
     }
 
     private void CreateNewGroup(final String groupName) {
-        RootRef.child("Groups").child(groupName).setValue("").addOnCompleteListener(new OnCompleteListener<Void>() {
+
+        Group group = new Group();
+        group.setName(groupName);
+        DatabaseReference newRef = RootRef.child("Groups").push();
+        newRef.setValue(group).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {

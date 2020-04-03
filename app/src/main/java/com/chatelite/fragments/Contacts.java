@@ -38,13 +38,8 @@ public class Contacts extends Fragment {
     private FirebaseAuth mAuth;
     private String currentUserID;
 
-    public Contacts() {
-        // Required empty public constructor
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         ContactsView = inflater.inflate(R.layout.fragment_contacts, container, false);
         myContactsList = ContactsView.findViewById(R.id.contacts_list);
         myContactsList.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -60,7 +55,6 @@ public class Contacts extends Fragment {
         super.onStart();
 
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Contact>().setQuery(ContactsRef, Contact.class).build();
-
         FirebaseRecyclerAdapter<Contact, ContactsViewHolder> adapter = new FirebaseRecyclerAdapter<Contact, ContactsViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull final ContactsViewHolder holder, int position, @NonNull Contact model) {

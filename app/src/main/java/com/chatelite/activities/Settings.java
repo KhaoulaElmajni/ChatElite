@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -95,14 +96,20 @@ public class Settings extends AppCompatActivity {
 
 
     private void InitializeFields() {
-        UpdateAccountSettings = (Button) findViewById(R.id.update_settings_button);
-        userName = (EditText) findViewById(R.id.set_user_name);
-        userStatus = (EditText) findViewById(R.id.set_profile_status);
-        userProfileImage = (CircleImageView) findViewById(R.id.set_profile_image);
+        UpdateAccountSettings = findViewById(R.id.update_settings_button);
+        userName = findViewById(R.id.set_user_name);
+        userStatus = findViewById(R.id.set_profile_status);
+        userProfileImage = findViewById(R.id.set_profile_image);
         //UserProfileImagesRef = FirebaseStorage.getInstance().getReference().child("Profile Images");
 
+
+        Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/font6.ttf");
+        UpdateAccountSettings.setTypeface(custom_font);
+        userName.setTypeface(custom_font);
+        userStatus.setTypeface(custom_font);
+
         loadingBar = new ProgressDialog(this);
-        SettingsToolbar = (Toolbar) findViewById(R.id.settings_toolbar);
+        SettingsToolbar = findViewById(R.id.settings_toolbar);
         setSupportActionBar(SettingsToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -137,10 +144,10 @@ public class Settings extends AppCompatActivity {
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageRef = storage.getReference();
 
-// Create a reference to "mountains.jpg"
+                // Create a reference to "mountains.jpg"
                 //StorageReference mountainsRef = storageRef.child(fileName);
 
-// Create a reference to 'images/mountains.jpg'
+                // Create a reference to 'images/mountains.jpg'
                 StorageReference mountainImagesRef = storageRef.child("CHATELITE" + "/PROFILES/" + resultUri.toString().split("/")[resultUri.toString().split("/").length - 1]);
 
                 InputStream stream = null;
@@ -164,7 +171,6 @@ public class Settings extends AppCompatActivity {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Toast.makeText(Settings.this, "Uploaded", Toast.LENGTH_SHORT).show();
-
 
 
                         mountainImagesRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -193,12 +199,6 @@ public class Settings extends AppCompatActivity {
 
                             }
                         });
-
-
-
-
-
-
 
                     }
                 });
