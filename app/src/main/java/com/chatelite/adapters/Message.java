@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chatelite.R;
-import com.chatelite.activities.Discussion;
 import com.chatelite.activities.ImageViewer;
 import com.chatelite.activities.Main;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,13 +33,12 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
     private List<com.chatelite.models.Message> userMessagesList;
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef;
     Typeface custom_font;
+    String date = null;
 
     public Message(Context context, List<com.chatelite.models.Message> userMessagesList) {
         this.userMessagesList = userMessagesList;
@@ -50,9 +49,9 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
     }
 
     public class MessageViewHolder extends RecyclerView.ViewHolder {
-        public TextView senderMessageText, receiverMessageText, sentTime, secondSentTime;
+        public TextView senderMessageText, receiverMessageText, sentTime, secondSentTime, messagesDate;
         //public CircleImageView receiverProfileImage;
-        public ImageView messageSenderPicture, messageReceiverPicture,seen;
+        public ImageView messageSenderPicture, messageReceiverPicture, seen;
 
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -65,6 +64,7 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
             messageReceiverPicture = itemView.findViewById(R.id.message_receiver_image_view);
             messageSenderPicture = itemView.findViewById(R.id.message_sender_image_view);
             seen = itemView.findViewById(R.id.seen);
+            messagesDate = itemView.findViewById(R.id.messages_date);
 
         }
     }
@@ -74,7 +74,7 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
     @Override
     public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.custom_messages_layout, viewGroup, false);
+                .inflate(R.layout.message_layout, viewGroup, false);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -86,7 +86,7 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
     public void onBindViewHolder(@NonNull final MessageViewHolder messageViewHolder, final int position) {
         String messageSenderId = mAuth.getCurrentUser().getUid();
         com.chatelite.models.Message messages = userMessagesList.get(position);
-
+        Log.d("estsb", position + "");
         String fromUserID = messages.getFrom();
         String fromMessageType = messages.getType();
 
@@ -113,24 +113,31 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
         messageViewHolder.senderMessageText.setVisibility(View.GONE);
         messageViewHolder.messageSenderPicture.setVisibility(View.GONE);
         messageViewHolder.messageReceiverPicture.setVisibility(View.GONE);
-
+        messageViewHolder.messagesDate.setTypeface(custom_font);
         if (fromMessageType.equals("text")) {
-
-
+            if (position == 0) {
+                messageViewHolder.messagesDate.setVisibility(View.VISIBLE);
+                date = messages.getDate();
+                messageViewHolder.messagesDate.setText(date);
+            } else {
+                messageViewHolder.messagesDate.setVisibility(View.GONE);
+                if (!date.equals(messages.getDate())) {
+                    messageViewHolder.messagesDate.setVisibility(View.VISIBLE);
+                    date = messages.getDate();
+                    messageViewHolder.messagesDate.setText(date);
+                }
+                date = messages.getDate();
+            }
             if (fromUserID.equals(messageSenderId)) {
-
                 messageViewHolder.senderMessageText.setVisibility(View.VISIBLE);
                 messageViewHolder.secondSentTime.setVisibility(View.INVISIBLE);
                 messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_messages_layout);
                 messageViewHolder.senderMessageText.setTextColor(Color.BLACK);
                 messageViewHolder.senderMessageText.setText(messages.getMessage());
-
                 messageViewHolder.sentTime.setText(messages.getTime());
-
                 messageViewHolder.senderMessageText.setTypeface(custom_font);
                 messageViewHolder.sentTime.setTypeface(custom_font);
-
-
+                messageViewHolder.messagesDate.setTypeface(custom_font);
             } else {
                 //TODO :
                 FirebaseDatabase.getInstance().getReference().child("Message").child(fromUserID).child(messageSenderId).child("MessageState").setValue("DELIVERED");
@@ -165,7 +172,7 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
                         .into(messageViewHolder.messageSenderPicture);
 
             } else {
-               // messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                // messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
                 messageViewHolder.messageReceiverPicture.setVisibility(View.VISIBLE);
 
                 Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/chatchat-da7fb.appspot.com/o/Image%20Files%2Ffile.png?alt=media&token=5a7c0cfe-1ef2-4f2d-a07e-57cdb18f30a6")
