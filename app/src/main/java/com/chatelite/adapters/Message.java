@@ -187,7 +187,7 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
 
             } else {
                 //TODO :
-                FirebaseDatabase.getInstance().getReference().child("Message").child(fromUserID).child(messageSenderId).child("MessageState").setValue("DELIVERED");
+                FirebaseDatabase.getInstance().getReference().child("Message").child(fromUserID).child(messageSenderId).child(messages.getMessageID()).child("MessageState").setValue("DELIVERED");
                 //messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
                 messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
                 messageViewHolder.sentTime.setVisibility(View.INVISIBLE);

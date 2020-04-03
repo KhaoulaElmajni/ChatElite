@@ -28,6 +28,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -112,7 +113,7 @@ public class Chats extends Fragment {
                                 holder.userLastMessage.setTypeface(custom_font);
                                 holder.lastMessageDate.setTypeface(custom_font);
                                 if (state.equals("Online")) {
-                                    holder.userLastMessage.setText("Online");
+                                    holder.lastMessageDate.setText("Online");
                                 } else if (state.equals("Offline")) {
 
                                     Calendar calendar = Calendar.getInstance();
@@ -134,9 +135,31 @@ public class Chats extends Fragment {
                                 }
 
                             } else {
-                                holder.userLastMessage.setText("Offline");
+                                holder.lastMessageDate.setText("Offline");
 
                             }
+
+
+                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                            Query lastQuery = databaseReference.child("Message").child(currentUserID).child(usersIDs).orderByKey().limitToLast(1);
+                            lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                                            if (dataSnapshot1.hasChild("message")) {
+                                                String message = dataSnapshot1.child("message").getValue().toString();
+                                                holder.userLastMessage.setText(message);
+                                            }
+
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
 
 
                             holder.itemView.setOnClickListener(new View.OnClickListener() {

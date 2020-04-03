@@ -94,7 +94,7 @@ public class Discussion extends AppCompatActivity {
     public static boolean isDiscussionActivityRunning = false;
     private MediaPlayer mPlayer = null;
 
-
+    String senderName = "";
     private String messageReceiverID, messageReceiverName, messageReceiverImage, messageSenderID, deviceToken;
     private MediaPlayer mp;
     private TextView userName, userLastSeen;
@@ -260,11 +260,11 @@ public class Discussion extends AppCompatActivity {
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        com.chatelite.models.Message messages = dataSnapshot.getValue(com.chatelite.models.Message.class);
+                        com.chatelite.models.Message message = dataSnapshot.getValue(com.chatelite.models.Message.class);
                         stopPlaying();
                         mp = MediaPlayer.create(Discussion.this, R.raw.incoming_message);
                         mp.start();
-                        messagesList.add(messages);
+                        messagesList.add(message);
                         messageAdapter.notifyDataSetChanged();
                         userMessagesList.smoothScrollToPosition(userMessagesList.getAdapter().getItemCount());
 
@@ -434,11 +434,7 @@ public class Discussion extends AppCompatActivity {
 */
 
 
-
                             RootRef.child("Users").child(messageSenderID).child("userState").child("state").setValue("Typing");
-
-
-
 
 
                         }
@@ -771,21 +767,30 @@ public class Discussion extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task task) {
                     if (task.isSuccessful()) {
-                        //Toast.makeText(Discussion.this, "Message Sent Successfully...", Toast.LENGTH_SHORT).show();
+                        RootRef.child("Users").child(currentUserID).child("name").addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                senderName = dataSnapshot.getValue(String.class);
 
-                        try {
-                            Jsoup.connect("https://fcm.googleapis.com/fcm/send")
-                                    .userAgent("Mozilla")
-                                    .header("Content-type", "application/json")
-                                    .header("Authorization", "key=AIzaSyDKXlWHYXZJqeezKjXtrQM43x8AQd9Zgl4")
-                                    .requestBody("{\"notification\":{\"title\":\"" + "Full Name" + "\",\"body\":\"" + messageText + "\"},\"to\" : \"" + deviceToken + "\"}")
-                                    .post();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                                try {
+                                    Jsoup.connect("https://fcm.googleapis.com/fcm/send")
+                                            .userAgent("Mozilla")
+                                            .header("Content-type", "application/json")
+                                            .header("Authorization", "key=AIzaSyDKXlWHYXZJqeezKjXtrQM43x8AQd9Zgl4")
+                                            .requestBody("{\"notification\":{\"title\":\"" + senderName + "\",\"body\":\"" + messageText + "\"},\"to\" : \"" + deviceToken + "\"}")
+                                            .post();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
 
 
-                        //Since it has been sent successfully :
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
 
                         ContentValues contentValues = new ContentValues();
                         //contentValues.put("MessageId", messageText);
