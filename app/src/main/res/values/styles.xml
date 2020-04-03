@@ -10,4 +10,9 @@
     <style name="HeaderBar">
         <item name="android:background">#303F9F</item>
     </style>
+
+
+    <style name="PopupMenuStyle" parent="Theme.AppCompat.Light">
+        <item name="android:background">@android:color/white</item>
+    </style>
 </resources>

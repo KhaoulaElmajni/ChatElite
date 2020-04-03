@@ -7,14 +7,14 @@
         android:id="@+id/video_call"
         android:orderInCategory="300"
         android:title="User"
-        android:icon="@drawable/cm"
+        android:icon="@drawable/ic_camera_alt_black_24dp"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/voice_call"
         android:orderInCategory="300"
         android:title="User"
-        android:icon="@drawable/ph"
+        android:icon="@drawable/ic_phone_black_24dp"
         app:showAsAction="ifRoom"/>
 
 

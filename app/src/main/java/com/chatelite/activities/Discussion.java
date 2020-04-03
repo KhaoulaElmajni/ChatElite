@@ -420,16 +420,25 @@ public class Discussion extends AppCompatActivity {
 
 
                         if (s.length() != 0) {
-                            final String messageSenderRef = "States/" + messageSenderID + "/" + messageReceiverID;
+                            /*
+                            final String messageSenderRef = "Users/" + messageSenderID + "/userState" ;
 
                             //DatabaseReference userMessageKeyRef = RootRef.child("States").child(messageSenderID).child(messageReceiverID).push();
                             //final String messagePushID = userMessageKeyRef.getKey();
                             Map messageTextBody = new HashMap();
-                            messageTextBody.put("State", "Typing");
+                            messageTextBody.put("state", "Typing");
                             Map messageBodyDetails = new HashMap();
                             messageBodyDetails.put(messageSenderRef, messageTextBody);
 
                             RootRef.updateChildren(messageBodyDetails);
+*/
+
+
+
+                            RootRef.child("Users").child(messageSenderID).child("userState").child("state").setValue("Typing");
+
+
+
 
 
                         }
@@ -454,16 +463,18 @@ public class Discussion extends AppCompatActivity {
                                     public void run() {
 
 
-                                        final String messageSenderRef = "States/" + messageSenderID + "/" + messageReceiverID;
+                                        /*final String messageSenderRef = "Users/" + messageSenderID + "/userState" ;
 
                                         //DatabaseReference userMessageKeyRef = RootRef.child("States").child(messageSenderID).child(messageReceiverID).push();
                                         //final String messagePushID = userMessageKeyRef.getKey();
                                         Map messageTextBody = new HashMap();
-                                        messageTextBody.put("State", "Nothing");
+                                        messageTextBody.put("state", "Online");
                                         Map messageBodyDetails = new HashMap();
-                                        messageBodyDetails.put(messageSenderRef, messageTextBody);
+                                        messageBodyDetails.replace(messageSenderRef, messageTextBody);
 
-                                        RootRef.updateChildren(messageBodyDetails);
+                                        RootRef.updateChildren(messageBodyDetails);*/
+
+                                        RootRef.child("Users").child(messageSenderID).child("userState").child("state").setValue("Online");
 
 
                                     }
@@ -474,32 +485,6 @@ public class Discussion extends AppCompatActivity {
                 }
         );
 
-
-        /**
-         MessageInputText.addTextChangedListener(new TextWatcher() {
-
-        @Override public void afterTextChanged(Editable s) {
-
-
-
-
-
-
-        }
-
-        @Override public void beforeTextChanged(CharSequence s, int start,
-        int count, int after) {
-
-
-        }
-
-        @Override public void onTextChanged(CharSequence s, int start,
-        int before, int count) {
-
-
-        }
-        });
-         **/
         messageAdapter = new Message(this, messagesList);
 
         userMessagesList = findViewById(R.id.private_messages_list_of_users);

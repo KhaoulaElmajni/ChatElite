@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -138,6 +139,52 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
                 messageViewHolder.senderMessageText.setTypeface(custom_font);
                 messageViewHolder.sentTime.setTypeface(custom_font);
                 messageViewHolder.messagesDate.setTypeface(custom_font);
+
+
+                messageViewHolder.senderMessageText.setOnTouchListener(new View.OnTouchListener() {
+                    float dX, initialX, initialY;
+                    boolean isInitialPositionSet = false;
+                    float dY;
+                    int lastAction;
+
+                    @Override
+                    public boolean onTouch(View view, MotionEvent event) {
+                        if (!isInitialPositionSet) {
+                            initialX = view.getX();
+                            initialY = view.getY();
+                            isInitialPositionSet = true;
+                        }
+                        switch (event.getActionMasked()) {
+                            case MotionEvent.ACTION_DOWN:
+                                dX = view.getX() - event.getRawX();
+                                dY = view.getY() - event.getRawY();
+                                lastAction = MotionEvent.ACTION_DOWN;
+                                break;
+
+                            case MotionEvent.ACTION_MOVE:
+                                //view.setY(event.getRawY() + dY);
+                                view.setX(event.getRawX() + dX);
+                                lastAction = MotionEvent.ACTION_MOVE;
+                                break;
+
+                            case MotionEvent.ACTION_UP:
+                                //if (lastAction == MotionEvent.ACTION_DOWN)
+                                view.setX(initialX);
+                                break;
+
+                            case MotionEvent.ACTION_CANCEL:
+                                //if (lastAction == MotionEvent.ACTION_DOWN)
+                                view.setX(initialX);
+                                break;
+
+                            default:
+                                return false;
+                        }
+                        return true;
+                    }
+                });
+
+
             } else {
                 //TODO :
                 FirebaseDatabase.getInstance().getReference().child("Message").child(fromUserID).child(messageSenderId).child("MessageState").setValue("DELIVERED");
