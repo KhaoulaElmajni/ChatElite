@@ -65,7 +65,7 @@ public class Groups extends Fragment {
                             Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/font6.ttf");
                             holder.groupName.setTypeface(custom_font);
                             holder.lastSentMessage.setTypeface(custom_font);
-
+                            String groupId = dataSnapshot.getKey();
                             String groupName = dataSnapshot.child("name").getValue().toString();
                             holder.groupName.setText(groupName);
                             holder.lastSentMessage.setText(groupName);
@@ -76,12 +76,10 @@ public class Groups extends Fragment {
                                     String currentGroupName = groupName;
                                     Intent groupChatIntent = new Intent(getContext(), GroupDiscussion.class);
                                     groupChatIntent.putExtra("groupName", currentGroupName);
+                                    groupChatIntent.putExtra("groupId", groupId);
                                     startActivity(groupChatIntent);
                                 }
                             });
-
-
-
 
 
                         }

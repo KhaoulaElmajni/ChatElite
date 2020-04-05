@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:id="@+id/layout"
     android:layout_height="match_parent"
-    android:background="@drawable/default_wallpaper"
+    android:background="@drawable/w2"
     tools:context=".activities.Discussion">
 
     <include
         android:id="@+id/chat_toolbar"
-        layout="@layout/app_bar_layout"></include>
+        layout="@layout/app_bar_layout"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/private_messages_list_of_users"

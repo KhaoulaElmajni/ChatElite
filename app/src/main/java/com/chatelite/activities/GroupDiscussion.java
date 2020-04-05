@@ -38,18 +38,19 @@ public class GroupDiscussion extends AppCompatActivity {
     private TextView displayTextMessages;
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef, GroupNameRef, GroupMessageKeyRef;
-    private String currentGroupName, currentUserID, currentUserName, currentDate, currentTime;
+    private String currentGroupName, currentGroupId, currentUserID, currentUserName, currentDate, currentTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.group_discussion);
         currentGroupName = getIntent().getExtras().get("groupName").toString();
-        Toast.makeText(GroupDiscussion.this, currentGroupName, Toast.LENGTH_SHORT).show();
+        currentGroupId = getIntent().getExtras().get("groupId").toString();
+        //Toast.makeText(GroupDiscussion.this, currentGroupName, Toast.LENGTH_SHORT).show();
         mAuth = FirebaseAuth.getInstance();
         currentUserID = mAuth.getCurrentUser().getUid();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        GroupNameRef = FirebaseDatabase.getInstance().getReference().child("Groups").child(currentGroupName);
+        GroupNameRef = FirebaseDatabase.getInstance().getReference().child("Groups").child(currentGroupId).child("Messages");
 
 
         InitializeFields();

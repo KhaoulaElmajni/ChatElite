@@ -6,10 +6,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F1F1F1"
-    tools:context=".activities.LoginByEmail">
+    tools:context=".activities.VoiceCall">
 
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/set_profile_image"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:src="@drawable/profile_image"
+        app:civ_border_color="@color/colorPrimary"
+        app:civ_border_width="5dp" />
 
     <Button
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/set_profile_image"
         android:layout_centerHorizontal="true"
         android:id="@+id/button"
         android:layout_width="160dp"
