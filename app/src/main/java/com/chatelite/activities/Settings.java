@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -114,6 +115,16 @@ public class Settings extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setTitle("Account Settings");
+        for (int i = 0; i < SettingsToolbar.getChildCount(); i++) {
+            View view = SettingsToolbar.getChildAt(i);
+
+            if (view instanceof TextView) {
+                TextView textView = (TextView) view;
+                textView.setTypeface(custom_font);
+            }
+
+
+        }
     }
 
 

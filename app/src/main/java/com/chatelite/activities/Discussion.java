@@ -891,7 +891,7 @@ public class Discussion extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.discussion_menu, menu);
         return true;
     }
 

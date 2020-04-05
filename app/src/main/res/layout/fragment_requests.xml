@@ -9,7 +9,7 @@
         android:id="@+id/no_item_photo"
         android:layout_centerHorizontal="true"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="280dp"
         android:layout_centerVertical="true"
         android:src="@drawable/no_request" />
     <TextView

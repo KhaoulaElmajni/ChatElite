@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:id="@+id/layout"
     android:layout_height="match_parent"
-    android:background="@drawable/w2"
+    android:background="@drawable/default_wallpaper"
     tools:context=".activities.Discussion">
 
     <include
@@ -18,7 +18,7 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/chat_linear_layout"
         android:layout_below="@+id/chat_toolbar"
-        android:layout_marginBottom="6dp"></androidx.recyclerview.widget.RecyclerView>
+        android:layout_marginBottom="6dp"/>
 
     <LinearLayout
         android:padding="6dp"
