@@ -43,30 +43,23 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
 
     public Message(Context context, List<com.chatelite.models.Message> userMessagesList) {
         this.userMessagesList = userMessagesList;
-
-
         custom_font = Typeface.createFromAsset(context.getAssets(), "fonts/Tajawal-Regular.ttf");
 
     }
 
     public class MessageViewHolder extends RecyclerView.ViewHolder {
         public TextView senderMessageText, receiverMessageText, sentTime, secondSentTime, messagesDate;
-        //public CircleImageView receiverProfileImage;
         public ImageView messageSenderPicture, messageReceiverPicture, seen;
-
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
-
             senderMessageText = itemView.findViewById(R.id.sender_message_text);
             sentTime = itemView.findViewById(R.id.message_time);
             secondSentTime = itemView.findViewById(R.id.second_message_time);
             receiverMessageText = itemView.findViewById(R.id.receiver_message_text);
-            //receiverProfileImage = itemView.findViewById(R.id.message_profile_image);
             messageReceiverPicture = itemView.findViewById(R.id.message_receiver_image_view);
             messageSenderPicture = itemView.findViewById(R.id.message_sender_image_view);
             seen = itemView.findViewById(R.id.seen);
             messagesDate = itemView.findViewById(R.id.messages_date);
-
         }
     }
 
@@ -74,11 +67,8 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
     @NonNull
     @Override
     public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.message_layout, viewGroup, false);
-
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_layout, viewGroup, false);
         mAuth = FirebaseAuth.getInstance();
-
         return new MessageViewHolder(view);
     }
 
@@ -110,26 +100,34 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
         });
 
         messageViewHolder.receiverMessageText.setVisibility(View.GONE);
-        //messageViewHolder.receiverProfileImage.setVisibility(View.GONE);
         messageViewHolder.senderMessageText.setVisibility(View.GONE);
         messageViewHolder.messageSenderPicture.setVisibility(View.GONE);
         messageViewHolder.messageReceiverPicture.setVisibility(View.GONE);
         messageViewHolder.messagesDate.setTypeface(custom_font);
-        if (fromMessageType.equals("text")) {
-            if (position == 0) {
+
+
+        if (position == 0) {
+            messageViewHolder.messagesDate.setVisibility(View.VISIBLE);
+            date = messages.getDate();
+            messageViewHolder.messagesDate.setText(date);
+        } else {
+            messageViewHolder.messagesDate.setVisibility(View.GONE);
+            if (!date.equals(messages.getDate())) {
                 messageViewHolder.messagesDate.setVisibility(View.VISIBLE);
                 date = messages.getDate();
                 messageViewHolder.messagesDate.setText(date);
-            } else {
-                messageViewHolder.messagesDate.setVisibility(View.GONE);
-                if (!date.equals(messages.getDate())) {
-                    messageViewHolder.messagesDate.setVisibility(View.VISIBLE);
-                    date = messages.getDate();
-                    messageViewHolder.messagesDate.setText(date);
-                }
-                date = messages.getDate();
             }
+            date = messages.getDate();
+        }
+
+        messageViewHolder.messagesDate.setTypeface(custom_font);
+
+
+        if (fromMessageType.equals("text")) {
+
             if (fromUserID.equals(messageSenderId)) {
+
+
                 messageViewHolder.senderMessageText.setVisibility(View.VISIBLE);
                 messageViewHolder.secondSentTime.setVisibility(View.INVISIBLE);
                 messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_messages_layout);
@@ -188,7 +186,6 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
             } else {
                 //TODO :
                 FirebaseDatabase.getInstance().getReference().child("Message").child(fromUserID).child(messageSenderId).child(messages.getMessageID()).child("MessageState").setValue("DELIVERED");
-                //messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
                 messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
                 messageViewHolder.sentTime.setVisibility(View.INVISIBLE);
                 messageViewHolder.seen.setVisibility(View.INVISIBLE);
@@ -201,11 +198,26 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
             }
 
         } else if (fromMessageType.equals("image")) {
+
+
             if (fromUserID.equals(messageSenderId)) {
                 messageViewHolder.messageSenderPicture.setVisibility(View.VISIBLE);
-
+                messageViewHolder.secondSentTime.setVisibility(View.INVISIBLE);
                 Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageSenderPicture);
+
+                messageViewHolder.senderMessageText.setVisibility(View.INVISIBLE);
+                messageViewHolder.secondSentTime.setVisibility(View.INVISIBLE);
+                messageViewHolder.sentTime.setText(messages.getTime());
+                messageViewHolder.sentTime.setTypeface(custom_font);
+
             } else {
+
+                messageViewHolder.senderMessageText.setVisibility(View.INVISIBLE);
+                messageViewHolder.secondSentTime.setVisibility(View.INVISIBLE);
+                messageViewHolder.sentTime.setText(messages.getTime());
+                messageViewHolder.sentTime.setTypeface(custom_font);
+
+
                 //messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
                 messageViewHolder.messageReceiverPicture.setVisibility(View.VISIBLE);
 
@@ -219,7 +231,6 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
                         .into(messageViewHolder.messageSenderPicture);
 
             } else {
-                // messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
                 messageViewHolder.messageReceiverPicture.setVisibility(View.VISIBLE);
 
                 Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/chatchat-da7fb.appspot.com/o/Image%20Files%2Ffile.png?alt=media&token=5a7c0cfe-1ef2-4f2d-a07e-57cdb18f30a6")
@@ -294,6 +305,7 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
                                 "Cancel",
                                 "Delete For everyone"
                         };
+
                         AlertDialog.Builder builder = new AlertDialog.Builder(messageViewHolder.itemView.getContext());
                         builder.setTitle("Delete Message?");
                         builder.setItems(options, new DialogInterface.OnClickListener() {

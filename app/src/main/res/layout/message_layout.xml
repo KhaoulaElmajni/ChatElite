@@ -32,6 +32,12 @@
         android:layout_marginLeft="8dp"
         android:layout_marginTop="10dp"
         android:orientation="vertical">
+        <ImageView
+            android:layout_below="@id/messages_date"
+            android:id="@+id/message_receiver_image_view"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:scaleType="centerCrop" />
         <TextView
             android:id="@+id/receiver_message_text"
             android:layout_width="wrap_content"
@@ -44,8 +50,8 @@
             android:textColor="@android:color/black"
             android:textSize="14sp" />
         <LinearLayout
-            android:gravity="center"
-            android:layout_gravity="center"
+            android:gravity="left"
+            android:layout_gravity="left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -60,25 +66,9 @@
     </LinearLayout>
 
 
-    <ImageView
-        android:layout_below="@id/messages_date"
-        android:id="@+id/message_sender_image_view"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="50dp"
-        android:layout_marginTop="13dp"
-        android:scaleType="centerCrop" />
 
-    <ImageView
-        android:layout_below="@id/messages_date"
-        android:id="@+id/message_receiver_image_view"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="13dp"
-        android:scaleType="centerCrop" />
+
+
 
 <LinearLayout
     android:layout_below="@id/messages_date"
@@ -88,6 +78,12 @@
     android:layout_marginRight="8dp"
     android:layout_marginTop="10dp"
     android:orientation="vertical">
+    <ImageView
+        android:layout_gravity="right"
+        android:id="@+id/message_sender_image_view"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:scaleType="centerCrop" />
     <TextView
         android:id="@+id/sender_message_text"
         android:layout_width="wrap_content"
