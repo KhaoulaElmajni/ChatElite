@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -99,8 +100,6 @@ public class Chats extends Fragment {
 
 
                             final String retName = dataSnapshot.child("name").getValue().toString();
-
-
                             final String device_token = dataSnapshot.child("device_token").getValue().toString();
                             final String retStatus = dataSnapshot.child("status").getValue().toString();
                             holder.userName.setText(retName);
@@ -264,6 +263,7 @@ public class Chats extends Fragment {
                                 }
                             });
 
+                            Log.d("THE-CHATELITE","Exists !");
 
                             photo.setVisibility(View.GONE);
                             text.setVisibility(View.GONE);
