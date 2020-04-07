@@ -54,7 +54,7 @@
         android:background="@drawable/input"
         android:elevation="8dp"
         android:gravity="center"
-        android:hint="I am available !"
+        android:text="Hi I am using ChatElite !"
         android:inputType="textEmailAddress"
         android:padding="4dp"
         android:textSize="20sp"

@@ -20,6 +20,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -52,34 +53,27 @@ public class Chats extends Fragment {
     private FirebaseAuth mAuth;
     private String currentUserID;
 
-
-    public Chats() {
-        // Required empty public constructor
-    }
-
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         PrivateChatsView = inflater.inflate(R.layout.fragment_chats, container, false);
-
         mAuth = FirebaseAuth.getInstance();
         currentUserID = mAuth.getCurrentUser().getUid();
         ChatsRef = FirebaseDatabase.getInstance().getReference().child("Contact").child(currentUserID);
-
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-
         chatsList = PrivateChatsView.findViewById(R.id.chats_list);
         chatsList.setLayoutManager(new LinearLayoutManager(getContext()));
-
-
         return PrivateChatsView;
     }
 
     @Override
     public void onStart() {
         super.onStart();
+
+        ImageView photo = PrivateChatsView.findViewById(R.id.no_item_photo);
+        TextView text = PrivateChatsView.findViewById(R.id.no_item_text);
+        Typeface  custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bariol_Regular.otf");
+        text.setTypeface(custom_font);
+
 
         FirebaseRecyclerOptions<Contact> options = new FirebaseRecyclerOptions.Builder<Contact>()
                 .setQuery(ChatsRef, Contact.class)
@@ -110,7 +104,7 @@ public class Chats extends Fragment {
                             final String device_token = dataSnapshot.child("device_token").getValue().toString();
                             final String retStatus = dataSnapshot.child("status").getValue().toString();
                             holder.userName.setText(retName);
-                            Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/font6.ttf");
+                            Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bariol_Regular.otf");
                             holder.userName.setTextColor(Color.BLACK);
                             holder.userName.setTypeface(custom_font);
                             if (dataSnapshot.child("userState").hasChild("state")) {
@@ -121,8 +115,9 @@ public class Chats extends Fragment {
                                 holder.lastMessageDate.setTypeface(custom_font);
                                 if (state.equals("Online")) {
                                     holder.lastMessageDate.setText("Online");
+                                }else if (state.equals("Typing")) {
+                                    holder.lastMessageDate.setText("Typing...");
                                 } else if (state.equals("Offline")) {
-
                                     Calendar calendar = Calendar.getInstance();
                                     SimpleDateFormat currentDate = new SimpleDateFormat("dd/MM/yyyy");
                                     String current_Date = currentDate.format(calendar.getTime());
@@ -206,7 +201,6 @@ public class Chats extends Fragment {
                             };
 
 
-
                             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                                 @Override
                                 public boolean onLongClick(View v) {
@@ -270,7 +264,19 @@ public class Chats extends Fragment {
                                 }
                             });
 
+
+                            photo.setVisibility(View.GONE);
+                            text.setVisibility(View.GONE);
+                            chatsList.setVisibility(View.VISIBLE);
+
+                        }else{
+
+                            photo.setVisibility(View.VISIBLE);
+                            text.setVisibility(View.VISIBLE);
+                            chatsList.setVisibility(View.GONE);
                         }
+
+
 
                     }
 
@@ -285,7 +291,7 @@ public class Chats extends Fragment {
             @Override
             public ChatsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int j) {
                 View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.last_discussion, viewGroup, false);
-                Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/font6.ttf");
+                Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bariol_Regular.otf");
                 RelativeLayout layout = getActivity().findViewById(R.id.layout);
                 ArrayList<View> clds = getAllChildren(layout);
                 for (int i = 0; i < clds.size(); i += 1) {

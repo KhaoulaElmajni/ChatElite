@@ -14,20 +14,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
 
-import org.jsoup.Jsoup;
-
-import java.io.IOException;
-import java.util.HashMap;
-
-/*
-
-
-2020-01-20 02:41:06.570 12432-12432/com.chatelite D/MY-FCM: fO8EhvJgghI:APA91bEwIfX2ieM3h6V3v5H88d7PdA8q-I4OW4pE8rxz97ByC_C32w4EWIGZ1_ye8CH_LsOoBFYykG8kueNooGUPTz2ojnyztoaXx928rMs89lNVsnbJBPB4SH1WfwgjqbZ0KAo-mpQz
-
-
- */
-
-
 public class FcmTokenRegistration extends IntentService {
 
     public FcmTokenRegistration() {
@@ -43,25 +29,16 @@ public class FcmTokenRegistration extends IntentService {
                     public void onComplete(@NonNull Task<InstanceIdResult> task) {
                         if (!task.isSuccessful()) {
 
-                            Log.d("Firebase getInstanceId failed " , task.getException().toString());
+                            Log.d("Firebase getInstanceId failed ", task.getException().toString());
                             return;
                         }
-
-                        // Get new Instance ID token
                         String token = task.getResult().getToken();
-
                         final SharedPreferences preferences = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-
-
                         preferences.edit().putString("FcmToken", token).apply();
                         String phone = preferences.getString("PhoneNumber", "Undefined");
                         if (!phone.equals("Undefined")) {
-
-
                         }
                         Log.d("MY-FCM", token);
-
-
                     }
                 });
     }

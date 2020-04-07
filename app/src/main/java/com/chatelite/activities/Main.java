@@ -158,7 +158,7 @@ public class Main extends AppCompatActivity {
             View view = toolbar.getChildAt(i);
             if (view instanceof TextView) {
                 TextView tv = (TextView) view;
-                Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/font6.ttf");
+                Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Bariol_Regular.otf");
                 //if(tv.getText().equals(toolbar.getTitle())){
                 tv.setTypeface(custom_font);
                 // break;
@@ -175,7 +175,7 @@ public class Main extends AppCompatActivity {
             for (int i = 0; i < tabChildsCount; i++) {
                 View tabViewChild = vgTab.getChildAt(i);
                 if (tabViewChild instanceof TextView) {
-                    Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/font6.ttf");
+                    Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Bariol_Regular.otf");
                     ((TextView) tabViewChild).setTypeface(custom_font);
                 }
             }

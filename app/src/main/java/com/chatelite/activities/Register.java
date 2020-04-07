@@ -65,7 +65,7 @@ public class Register extends AppCompatActivity {
         });
 
 
-        Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/font6.ttf");
+        Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Bariol_Regular.otf");
 
 
         RelativeLayout layout = findViewById(R.id.layout);

@@ -61,7 +61,7 @@ public class FindFriends extends AppCompatActivity {
                 holder.userStatus.setText(model.getStatus());
                 Picasso.get().load(model.getImage()).placeholder(R.drawable.profile_image).into(holder.profileImage);
 
-                Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/font6.ttf");
+                Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Bariol_Regular.otf");
                 holder.userName.setTypeface(custom_font);
                 holder.userStatus.setTypeface(custom_font);
 

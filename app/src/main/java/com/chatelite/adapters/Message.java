@@ -139,6 +139,12 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
                 messageViewHolder.messagesDate.setTypeface(custom_font);
 
 
+
+
+
+
+
+
                 messageViewHolder.senderMessageText.setOnTouchListener(new View.OnTouchListener() {
                     float dX, initialX, initialY;
                     boolean isInitialPositionSet = false;
@@ -204,23 +210,19 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
                 messageViewHolder.messageSenderPicture.setVisibility(View.VISIBLE);
                 messageViewHolder.secondSentTime.setVisibility(View.INVISIBLE);
                 Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageSenderPicture);
-
-                messageViewHolder.senderMessageText.setVisibility(View.INVISIBLE);
+                messageViewHolder.senderMessageText.setVisibility(View.GONE);
                 messageViewHolder.secondSentTime.setVisibility(View.INVISIBLE);
                 messageViewHolder.sentTime.setText(messages.getTime());
                 messageViewHolder.sentTime.setTypeface(custom_font);
 
             } else {
-
-                messageViewHolder.senderMessageText.setVisibility(View.INVISIBLE);
-                messageViewHolder.secondSentTime.setVisibility(View.INVISIBLE);
-                messageViewHolder.sentTime.setText(messages.getTime());
-                messageViewHolder.sentTime.setTypeface(custom_font);
-
-
-                //messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                messageViewHolder.seen.setVisibility(View.GONE);
+                messageViewHolder.senderMessageText.setVisibility(View.GONE);
+                messageViewHolder.secondSentTime.setVisibility(View.VISIBLE);
+                messageViewHolder.secondSentTime.setText(messages.getTime());
+                messageViewHolder.secondSentTime.setTypeface(custom_font);
+                messageViewHolder.sentTime.setVisibility(View.GONE);
                 messageViewHolder.messageReceiverPicture.setVisibility(View.VISIBLE);
-
                 Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageReceiverPicture);
             }
         } else if (fromMessageType.equals("pdf") || fromMessageType.equals("docx")) {
@@ -229,10 +231,19 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
 
                 Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/chatchat-da7fb.appspot.com/o/Image%20Files%2Ffile.png?alt=media&token=5a7c0cfe-1ef2-4f2d-a07e-57cdb18f30a6")
                         .into(messageViewHolder.messageSenderPicture);
-
+                messageViewHolder.secondSentTime.setVisibility(View.GONE);
+                messageViewHolder.senderMessageText.setVisibility(View.GONE);
+                messageViewHolder.sentTime.setVisibility(View.VISIBLE);
+                messageViewHolder.sentTime.setText(messages.getTime());
+                messageViewHolder.sentTime.setTypeface(custom_font);
             } else {
+                messageViewHolder.seen.setVisibility(View.GONE);
+                messageViewHolder.sentTime.setVisibility(View.GONE);
+                messageViewHolder.receiverMessageText.setVisibility(View.GONE);
+                messageViewHolder.secondSentTime.setVisibility(View.VISIBLE);
+                messageViewHolder.secondSentTime.setText(messages.getTime());
+                messageViewHolder.secondSentTime.setTypeface(custom_font);
                 messageViewHolder.messageReceiverPicture.setVisibility(View.VISIBLE);
-
                 Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/chatchat-da7fb.appspot.com/o/Image%20Files%2Ffile.png?alt=media&token=5a7c0cfe-1ef2-4f2d-a07e-57cdb18f30a6")
                         .into(messageViewHolder.messageReceiverPicture);
             }

@@ -12,6 +12,7 @@
         android:layout_height="280dp"
         android:layout_centerVertical="true"
         android:src="@drawable/no_request" />
+
     <TextView
         android:layout_marginTop="20dp"
         android:id="@+id/no_item_text"

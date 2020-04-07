@@ -196,7 +196,7 @@ public class Discussion extends AppCompatActivity {
         });
 
 
-        Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/font6.ttf");
+        Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Bariol_Regular.otf");
 
         RelativeLayout layout = findViewById(R.id.layout);
         ArrayList<View> clds = getAllChildren(layout);
@@ -409,7 +409,7 @@ public class Discussion extends AppCompatActivity {
         userImage = findViewById(R.id.custom_profile_image);
         userName = findViewById(R.id.custom_profile_name);
         userLastSeen = findViewById(R.id.custom_user_last_seen);
-        Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/font6.ttf");
+        Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Bariol_Regular.otf");
         userName.setTypeface(custom_font);
         userLastSeen.setTypeface(custom_font);
         SendMessageButton = findViewById(R.id.send_message_btn);
@@ -669,6 +669,9 @@ public class Discussion extends AppCompatActivity {
                                 }
 
                                 userLastSeen.setText(date + " at " + time);
+                            }
+                            else if (state.equals("Typing")) {
+                                userLastSeen.setText("Typing...");
                             }
                         } else {
                             userLastSeen.setText("Offline");

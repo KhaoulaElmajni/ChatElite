@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,13 @@ public class Contacts extends Fragment {
     public void onStart() {
         super.onStart();
 
+
+        ImageView photo = ContactsView.findViewById(R.id.no_item_photo);
+        TextView text = ContactsView.findViewById(R.id.no_item_text);
+        Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bariol_Regular.otf");
+        text.setTypeface(custom_font);
+
+
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Contact>().setQuery(ContactsRef, Contact.class).build();
         FirebaseRecyclerAdapter<Contact, ContactsViewHolder> adapter = new FirebaseRecyclerAdapter<Contact, ContactsViewHolder>(options) {
             @Override
@@ -63,9 +71,9 @@ public class Contacts extends Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
+                            Log.d("estsb", "exists");
 
-
-                            Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/font6.ttf");
+                            Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bariol_Regular.otf");
                             holder.userName.setTypeface(custom_font);
                             holder.userStatus.setTypeface(custom_font);
 
@@ -102,6 +110,18 @@ public class Contacts extends Fragment {
                                 holder.userName.setText(profileName);
                                 holder.userStatus.setText(profileStatus);
                             }
+
+
+                            photo.setVisibility(View.GONE);
+                            text.setVisibility(View.GONE);
+                            myContactsList.setVisibility(View.VISIBLE);
+
+
+                        }
+                        else{
+                            photo.setVisibility(View.VISIBLE);
+                            text.setVisibility(View.VISIBLE);
+                            myContactsList.setVisibility(View.GONE);
                         }
                     }
 

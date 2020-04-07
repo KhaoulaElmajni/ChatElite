@@ -69,7 +69,7 @@ public class Requests extends Fragment {
         photo.setVisibility(View.VISIBLE);
         text.setVisibility(View.VISIBLE);
 
-        Typeface  custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/font6.ttf");
+        Typeface  custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bariol_Regular.otf");
         text.setTypeface(custom_font);
 
 
@@ -81,7 +81,7 @@ public class Requests extends Fragment {
                         holder.itemView.findViewById(R.id.request_cancel_btn).setVisibility(View.VISIBLE);
 
 
-                        Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/font6.ttf");
+                        Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bariol_Regular.otf");
                         holder.userName.setTypeface(custom_font);
                         holder.userStatus.setTypeface(custom_font);
                         holder.AcceptButton.setTypeface(custom_font);
@@ -131,7 +131,7 @@ public class Requests extends Fragment {
 
 
                                                 Button accept = holder.AcceptButton;
-                                                Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/font6.ttf");
+                                                Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bariol_Regular.otf");
                                                 accept.setTypeface(custom_font);
                                                 accept.setOnClickListener(new View.OnClickListener() {
                                                     @Override
@@ -177,7 +177,7 @@ public class Requests extends Fragment {
 
 
                                                 Button cancel = holder.CancelButton;
-                                                //Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/font6.ttf");
+                                                //Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bariol_Regular.otf");
                                                 cancel.setTypeface(custom_font);
                                                 cancel.setOnClickListener(new View.OnClickListener() {
                                                     @Override
@@ -232,7 +232,7 @@ public class Requests extends Fragment {
                                     } else if (type.equals("sent")) {
                                         Button request_sent_btn = holder.itemView.findViewById(R.id.request_cancel_btn);
                                         request_sent_btn.setText("Cancel");
-                                        Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/font6.ttf");
+                                        Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bariol_Regular.otf");
                                         request_sent_btn.setTypeface(custom_font);
                                         request_sent_btn.setOnClickListener(new View.OnClickListener() {
                                             @Override
@@ -317,7 +317,7 @@ public class Requests extends Fragment {
                                     photo.setVisibility(View.VISIBLE);
                                     text.setVisibility(View.VISIBLE);
 
-                                    Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/font6.ttf");
+                                    Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bariol_Regular.otf");
                                     text.setTypeface(custom_font);
                                 }
                             }

@@ -104,7 +104,7 @@ public class Settings extends AppCompatActivity {
         //UserProfileImagesRef = FirebaseStorage.getInstance().getReference().child("Profile Images");
 
 
-        Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/font6.ttf");
+        Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Bariol_Regular.otf");
         UpdateAccountSettings.setTypeface(custom_font);
         userName.setTypeface(custom_font);
         userStatus.setTypeface(custom_font);

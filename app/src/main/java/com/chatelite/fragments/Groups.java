@@ -53,6 +53,15 @@ public class Groups extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
+
+        ImageView photo = GroupsView.findViewById(R.id.no_item_photo);
+        TextView text = GroupsView.findViewById(R.id.no_item_text);
+        Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bariol_Regular.otf");
+        text.setTypeface(custom_font);
+
+
+
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Group>().setQuery(GroupsRef, Group.class).build();
         FirebaseRecyclerAdapter<Group, GroupsViewHolder> adapter = new FirebaseRecyclerAdapter<Group, GroupsViewHolder>(options) {
             @Override
@@ -62,7 +71,7 @@ public class Groups extends Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                            Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/font6.ttf");
+                            Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bariol_Regular.otf");
                             holder.groupName.setTypeface(custom_font);
                             holder.lastSentMessage.setTypeface(custom_font);
                             String groupId = dataSnapshot.getKey();
@@ -81,8 +90,16 @@ public class Groups extends Fragment {
                                 }
                             });
 
+                            photo.setVisibility(View.GONE);
+                            text.setVisibility(View.GONE);
+                            myGroupsList.setVisibility(View.VISIBLE);
 
+                        }else{
+                            photo.setVisibility(View.VISIBLE);
+                            text.setVisibility(View.VISIBLE);
+                            myGroupsList.setVisibility(View.GONE);
                         }
+
                     }
 
                     @Override
