@@ -118,21 +118,23 @@ public class Chats extends Fragment {
                             holder.messagesNumber.setTypeface(custom_font);
                             if (position == 0) {
                                 //holder.messagesNumber.setVisibility(View.GONE);
+                                holder.ifSeen.setVisibility(View.GONE);
                                 holder.messagesNumber.setText("3");
                             } else if (position == 1) {
+                                holder.ifSeen.setImageResource(R.drawable.seen);
                                 holder.messagesNumber.setVisibility(View.GONE);
                                 holder.messagesNumber.setText("3");
-                            }
-                            else if (position == 2) {
+                            } else if (position == 2) {
+                                holder.ifSeen.setVisibility(View.GONE);
                                 //holder.messagesNumber.setVisibility(View.GONE);
                                 holder.messagesNumber.setText("1");
-                            }
-                            else if (position == 3) {
+                            } else if (position == 3) {
+                                holder.ifSeen.setImageResource(R.drawable.doublee);
                                 holder.messagesNumber.setVisibility(View.GONE);
                                 holder.messagesNumber.setText("4");
-                            }
-                            else if (position == 4) {
-                               //holder.messagesNumber.setVisibility(View.GONE);
+                            } else if (position == 4) {
+                                holder.ifSeen.setVisibility(View.GONE);
+                                //holder.messagesNumber.setVisibility(View.GONE);
                                 holder.messagesNumber.setText("4");
                             }
                             if (dataSnapshot.child("userState").hasChild("state")) {
@@ -143,6 +145,7 @@ public class Chats extends Fragment {
                                 holder.lastMessageDate.setTypeface(custom_font);
                                 if (state.equals("Online")) {
                                     holder.lastMessageDate.setText("Online");
+                                    holder.lastMessageDate.setTextColor(Color.parseColor("#1abc9c"));
                                 } else if (state.equals("Typing")) {
                                     holder.lastMessageDate.setText("Typing...");
                                 } else if (state.equals("Offline")) {
@@ -185,6 +188,34 @@ public class Chats extends Fragment {
                                                 } catch (ParseException e) {
                                                     e.printStackTrace();
                                                 }
+
+
+                                                String date = dataSnapshot1.child("date").getValue().toString();
+                                                Calendar calendar = Calendar.getInstance();
+                                                SimpleDateFormat currentDate = new SimpleDateFormat("MM/dd/yyyy");
+                                                String current_Date = currentDate.format(calendar.getTime());
+
+                                                calendar.add(Calendar.DATE, -1);
+                                                SimpleDateFormat yesterdayDate = new SimpleDateFormat("MM/dd/yyyy");
+                                                String yesterday_Date = yesterdayDate.format(calendar.getTime());
+
+                                                if (current_Date.equals(date)) {
+                                                    date = "Today";
+                                                } else if (yesterday_Date.equals(date)) {
+                                                    date = "Yesterday";
+                                                }
+
+
+                                                holder.lastMessageDateAndTime.setText(date + " at " + dataSnapshot1.child("time").getValue().toString());
+                                                holder.lastMessageDateAndTime.setTypeface(custom_font);
+                                                /**if (dataSnapshot1.child("MessageState").getValue().toString().equals("SENT")) {
+                                                 holder.ifSeen.setImageResource(R.drawable.sent_state);
+                                                 } else if (dataSnapshot1.child("MessageState").getValue().toString().equals("SEEN")) {
+                                                 holder.ifSeen.setImageResource(R.drawable.seen);
+                                                 } else if (dataSnapshot1.child("MessageState").getValue().toString().equals("DELIVERED")) {
+                                                 holder.ifSeen.setImageResource(R.drawable.doublee);
+                                                 }
+                                                 **/
 
                                                 message1[0] = dataSnapshot1.child("message").getValue().toString();
 
@@ -414,8 +445,9 @@ public class Chats extends Fragment {
 
     public static class ChatsViewHolder extends RecyclerView.ViewHolder {
         CircleImageView profileImage;
-        TextView userLastMessage, userName, lastMessageDate, messagesNumber;
+        TextView userLastMessage, userName, lastMessageDate, messagesNumber, lastMessageDateAndTime;
         LinearLayout theLayout;
+        ImageView ifSeen;
 
         public ChatsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -425,6 +457,8 @@ public class Chats extends Fragment {
             userName = itemView.findViewById(R.id.user_profile_name);
             lastMessageDate = itemView.findViewById(R.id.lastMessageDate);
             messagesNumber = itemView.findViewById(R.id.messagesNumber);
+            ifSeen = itemView.findViewById(R.id.ifSeen);
+            lastMessageDateAndTime = itemView.findViewById(R.id.last_message_date_and_time);
         }
     }
 }
