@@ -4,20 +4,23 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
+        android:id="@+id/the_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="6dp"
         android:layout_marginRight="12dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="2dp"
         android:background="@drawable/start"
-        android:elevation="4dp"
+        android:elevation="2dp"
         android:orientation="horizontal"
         android:padding="10dp">
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/groupPhoto"
@@ -25,38 +28,113 @@
                 android:layout_height="60dp"
                 android:src="@drawable/the_user" />
 
+            <ImageView
+                android:id="@+id/user_online_status"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
+                android:src="@drawable/offline"
+                android:visibility="gone" />
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:layout_width="match_parent"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/groupName"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Firstname Lastname"
-                    android:textColor="#000"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:textAlignment="center"
+                    android:textAlignment="textStart"
                     android:textSize="16sp"
                     android:textStyle="bold" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/lastSentMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="The last sent message"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:textAlignment="center"
+                android:text="The last sent message.[Seen]"
+                android:textAlignment="textStart"
                 android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:textStyle="bold"
+                    android:id="@+id/last_message_date_and_time"
+                    android:layout_width="120dp"
+                    android:layout_height="16dp"
+                    android:text="08/02/2020 at 12:12 AM"
+                    android:textAlignment="textStart"
+                    android:textSize="10sp" />
+
+                <ImageView
+                    android:id="@+id/ifSeen"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginLeft="2dp"
+                    android:src="@drawable/seen" />
+            </LinearLayout>
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/membersNumber"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="6dp"
+                android:gravity="center"
+                android:text="200 members"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/messagesNumber"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="6dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/messages_number"
+                android:elevation="3dp"
+                android:gravity="center"
+                android:text="16"
+                android:textColor="#fff"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+            <Button
+                android:layout_marginTop="4dp"
+                android:id="@+id/archive"
+                android:layout_width="match_parent"
+                android:layout_height="26dp"
+                android:layout_gravity="center"
+                android:background="@drawable/friend_request"
+                android:elevation="3dp"
+                android:gravity="center"
+                android:padding="4dp"
+                android:text="Archive"
+                android:textAllCaps="false"
+                android:textColor="@android:color/background_light"
+                android:textSize="12sp" />
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

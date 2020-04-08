@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -76,6 +77,8 @@ public class Contacts extends Fragment {
                             Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bariol_Regular.otf");
                             holder.userName.setTypeface(custom_font);
                             holder.userStatus.setTypeface(custom_font);
+                            holder.chatWith.setTypeface(custom_font);
+                            holder.unfriend.setTypeface(custom_font);
 
                             if (dataSnapshot.child("userState").hasChild("state")) {
                                 String state = dataSnapshot.child("userState").child("state").getValue().toString();
@@ -117,8 +120,7 @@ public class Contacts extends Fragment {
                             myContactsList.setVisibility(View.VISIBLE);
 
 
-                        }
-                        else{
+                        } else {
                             photo.setVisibility(View.VISIBLE);
                             text.setVisibility(View.VISIBLE);
                             myContactsList.setVisibility(View.GONE);
@@ -149,7 +151,7 @@ public class Contacts extends Fragment {
         TextView userName, userStatus;
         CircleImageView profileImage;
         TextView onlineIcon;
-
+        Button chatWith, unfriend;
 
         public ContactsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -157,6 +159,8 @@ public class Contacts extends Fragment {
             userStatus = itemView.findViewById(R.id.user_status);
             profileImage = itemView.findViewById(R.id.users_profile_image);
             onlineIcon = itemView.findViewById(R.id.user_online_status);
+            chatWith = itemView.findViewById(R.id.chat_with);
+            unfriend = itemView.findViewById(R.id.unfriend);
 
         }
     }

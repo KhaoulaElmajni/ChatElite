@@ -48,7 +48,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class Settings extends AppCompatActivity {
 
     private Button UpdateAccountSettings;
-    private EditText userName, userStatus;
+    private EditText userName, userStatus, userPhoneNumber, userEmail, userPassword;
     private CircleImageView userProfileImage;
     private String currentUserID;
     private FirebaseAuth mAuth;
@@ -85,10 +85,15 @@ public class Settings extends AppCompatActivity {
         userProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent galleryIntent = new Intent();
-                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, GalleryPick);
+                /**Intent galleryIntent = new Intent();
+                 galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                 galleryIntent.setType("image/*");
+                 startActivityForResult(galleryIntent, GalleryPick);**/
+
+                CropImage.activity()
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setAspectRatio(1, 1)
+                        .start(Settings.this);
             }
         });
 
@@ -101,6 +106,10 @@ public class Settings extends AppCompatActivity {
         userName = findViewById(R.id.set_user_name);
         userStatus = findViewById(R.id.set_profile_status);
         userProfileImage = findViewById(R.id.set_profile_image);
+
+        userEmail = findViewById(R.id.set_user_email);
+        userPhoneNumber = findViewById(R.id.set_user_phone_number);
+        userPassword = findViewById(R.id.set_user_password);
         //UserProfileImagesRef = FirebaseStorage.getInstance().getReference().child("Profile Images");
 
 
@@ -108,6 +117,10 @@ public class Settings extends AppCompatActivity {
         UpdateAccountSettings.setTypeface(custom_font);
         userName.setTypeface(custom_font);
         userStatus.setTypeface(custom_font);
+
+        userEmail.setTypeface(custom_font);
+        userPhoneNumber.setTypeface(custom_font);
+        userPassword.setTypeface(custom_font);
 
         loadingBar = new ProgressDialog(this);
         SettingsToolbar = findViewById(R.id.settings_toolbar);

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -61,7 +63,6 @@ public class Groups extends Fragment {
         text.setTypeface(custom_font);
 
 
-
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Group>().setQuery(GroupsRef, Group.class).build();
         FirebaseRecyclerAdapter<Group, GroupsViewHolder> adapter = new FirebaseRecyclerAdapter<Group, GroupsViewHolder>(options) {
             @Override
@@ -71,30 +72,52 @@ public class Groups extends Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                            Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bariol_Regular.otf");
-                            holder.groupName.setTypeface(custom_font);
-                            holder.lastSentMessage.setTypeface(custom_font);
-                            String groupId = dataSnapshot.getKey();
-                            String groupName = dataSnapshot.child("name").getValue().toString();
-                            holder.groupName.setText(groupName);
-                            holder.lastSentMessage.setText(groupName);
 
-                            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    String currentGroupName = groupName;
-                                    Intent groupChatIntent = new Intent(getContext(), GroupDiscussion.class);
-                                    groupChatIntent.putExtra("groupName", currentGroupName);
-                                    groupChatIntent.putExtra("groupId", groupId);
-                                    startActivity(groupChatIntent);
+                            boolean memberOfTheGroup = false;
+                            int membersNumber = 0;
+                            for (DataSnapshot dataSnapshot1 : dataSnapshot.child("members").getChildren()) {
+                                if (dataSnapshot1.child("id").getValue().toString().equals(mAuth.getCurrentUser().getUid())) {
+                                    memberOfTheGroup = true;
+                                    membersNumber = (int) dataSnapshot.child("members").getChildrenCount();
+                                    break;
                                 }
-                            });
+                            }
 
-                            photo.setVisibility(View.GONE);
-                            text.setVisibility(View.GONE);
-                            myGroupsList.setVisibility(View.VISIBLE);
+                            if (memberOfTheGroup) {
+                                Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bariol_Regular.otf");
+                                holder.groupName.setTypeface(custom_font);
+                                holder.lastSentMessage.setTypeface(custom_font);
+                                holder.membersNumber.setTypeface(custom_font);
+                                holder.membersNumber.setText(membersNumber + " members");
 
-                        }else{
+
+                                holder.messagesNumber.setTypeface(custom_font);
+                                holder.lastMessageDateAndTime.setTypeface(custom_font);
+                                holder.archive.setTypeface(custom_font);
+
+
+                                String groupId = dataSnapshot.getKey();
+                                String groupName = dataSnapshot.child("name").getValue().toString();
+                                holder.groupName.setText(groupName);
+                                holder.lastSentMessage.setText(groupName);
+                                Picasso.get().load(dataSnapshot.child("photo").getValue().toString()).placeholder(R.drawable.profile_image).into(holder.groupPhoto);
+                                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        String currentGroupName = groupName;
+                                        Intent groupChatIntent = new Intent(getContext(), GroupDiscussion.class);
+                                        groupChatIntent.putExtra("groupName", currentGroupName);
+                                        groupChatIntent.putExtra("groupId", groupId);
+                                        startActivity(groupChatIntent);
+                                    }
+                                });
+
+                                photo.setVisibility(View.GONE);
+                                text.setVisibility(View.GONE);
+                                myGroupsList.setVisibility(View.VISIBLE);
+                            }
+
+                        } else {
                             photo.setVisibility(View.VISIBLE);
                             text.setVisibility(View.VISIBLE);
                             myGroupsList.setVisibility(View.GONE);
@@ -123,14 +146,21 @@ public class Groups extends Fragment {
 
 
     public static class GroupsViewHolder extends RecyclerView.ViewHolder {
-        TextView groupName, lastSentMessage;
+        TextView groupName, lastSentMessage, membersNumber, messagesNumber, lastMessageDateAndTime;
         CircleImageView groupPhoto;
+        ImageView ifSeen;
+        Button archive;
 
         public GroupsViewHolder(@NonNull View itemView) {
             super(itemView);
             groupName = itemView.findViewById(R.id.groupName);
             lastSentMessage = itemView.findViewById(R.id.lastSentMessage);
             groupPhoto = itemView.findViewById(R.id.groupPhoto);
+            membersNumber = itemView.findViewById(R.id.membersNumber);
+            messagesNumber = itemView.findViewById(R.id.messagesNumber);
+            lastMessageDateAndTime = itemView.findViewById(R.id.last_message_date_and_time);
+            ifSeen = itemView.findViewById(R.id.ifSeen);
+            archive = itemView.findViewById(R.id.archive);
         }
     }
 

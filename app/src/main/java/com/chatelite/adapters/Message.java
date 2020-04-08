@@ -80,7 +80,7 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
         Log.d("estsb", position + "");
         String fromUserID = messages.getFrom();
         String fromMessageType = messages.getType();
-
+        Log.d("estsb", fromUserID + "");
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(fromUserID);
 
         UsersRef.addValueEventListener(new ValueEventListener() {

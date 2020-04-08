@@ -1,16 +1,21 @@
 package com.chatelite.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -27,7 +32,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +45,10 @@ import androidx.viewpager.widget.ViewPager;
 import com.chatelite.R;
 import com.chatelite.adapters.TabsAccessor;
 import com.chatelite.models.Group;
+import com.chatelite.models.Member;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,8 +58,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -64,8 +84,11 @@ public class Main extends AppCompatActivity {
     private DatabaseReference RootRef;
     public static boolean isMainActivityRunning;
     private FirebaseAuth mAuth;
-
+    private ProgressDialog loadingBar;
+    private StorageTask uploadTask;
     private String currentUserID;
+    private String createdGroupPhoto;
+    private ImageView theGroupPhoto = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +97,7 @@ public class Main extends AppCompatActivity {
         //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.main);
 
-
+        loadingBar = new ProgressDialog(this);
         ActivityCompat.requestPermissions(Main.this,
                 new String[]{
                         Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -328,6 +351,61 @@ public class Main extends AppCompatActivity {
     }
 
     private void RequestNewGroup() {
+
+
+        final Dialog dialog = new Dialog(Main.this);
+        dialog.setContentView(R.layout.new_group);
+        dialog.setCancelable(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        EditText name = dialog.findViewById(R.id.groupName);
+        Button create = dialog.findViewById(R.id.createGroup);
+        ImageView groupPhoto = dialog.findViewById(R.id.groupPhoto);
+        theGroupPhoto = groupPhoto;
+        Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Bariol_Regular.otf");
+        name.setTypeface(custom_font);
+        create.setTypeface(custom_font);
+        create.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                String groupName = name.getText().toString();
+                if (TextUtils.isEmpty(groupName)) {
+                    Toast.makeText(Main.this, "Please write a name for your group...", Toast.LENGTH_SHORT).show();
+                } else {
+                    CreateNewGroup(groupName, createdGroupPhoto);
+                }
+
+
+                dialog.dismiss();
+
+
+            }
+        });
+
+        groupPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                CropImage.activity()
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setAspectRatio(1, 1)
+                        .start(Main.this);
+
+
+            }
+        });
+
+
+        dialog.show();
+
+
+
+
+
+
+
+/*
         AlertDialog.Builder builder = new AlertDialog.Builder(Main.this, R.style.AlertDialog);
         builder.setTitle("Enter Group Name :");
         final EditText groupNameField = new EditText(Main.this);
@@ -351,13 +429,15 @@ public class Main extends AppCompatActivity {
                 dialogInterface.cancel();
             }
         });
-        builder.show();
+        builder.show();*/
     }
 
-    private void CreateNewGroup(final String groupName) {
+    private void CreateNewGroup(final String groupName, final String photo) {
 
         Group group = new Group();
         group.setName(groupName);
+        group.setPhoto(photo);
+        group.setAdmin(mAuth.getCurrentUser().getUid());
         DatabaseReference newRef = RootRef.child("Groups").push();
         newRef.setValue(group).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -367,6 +447,24 @@ public class Main extends AppCompatActivity {
                 }
             }
         });
+
+
+        Member member = new Member();
+        member.setId(mAuth.getCurrentUser().getUid());
+        DatabaseReference anotherNewRef = RootRef.child("Groups").child(newRef.getKey()).child("members").push();
+        anotherNewRef.setValue(member).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(Main.this, groupName + " Member added Successfully...", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+
+
+
     }
 
     private void SendUserToLoginActivity() {
@@ -435,4 +533,99 @@ public class Main extends AppCompatActivity {
             // permissions this app might request
         }
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+
+            if (resultCode == RESULT_OK) {
+                loadingBar.setTitle("Updating Profile Picture");
+                loadingBar.setMessage("Please wait, while your profile image is updating... ");
+                loadingBar.setCanceledOnTouchOutside(false);
+                loadingBar.show();
+
+                Uri resultUri = result.getUri();
+
+                //StorageReference filePath = UserProfileImagesRef.child(currentUserID + ".jpg");
+
+
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference storageRef = storage.getReference();
+
+                // Create a reference to "mountains.jpg"
+                //StorageReference mountainsRef = storageRef.child(fileName);
+
+                // Create a reference to 'images/mountains.jpg'
+                StorageReference mountainImagesRef = storageRef.child("CHATELITE" + "/PROFILES/" + resultUri.toString().split("/")[resultUri.toString().split("/").length - 1]);
+
+                InputStream stream = null;
+                try {
+                    stream = new FileInputStream(new File(resultUri.getPath()));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                uploadTask = mountainImagesRef.putStream(stream);
+
+                uploadTask.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Toast.makeText(Main.this, "Failed", Toast.LENGTH_SHORT).show();
+                        String message = exception.toString();
+                        Toast.makeText(Main.this, "ERROR: " + message, Toast.LENGTH_SHORT).show();
+                        loadingBar.dismiss();
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Toast.makeText(Main.this, "Uploaded", Toast.LENGTH_SHORT).show();
+
+
+                        mountainImagesRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                createdGroupPhoto = uri.toString();
+                                Picasso.get().load(createdGroupPhoto).into(theGroupPhoto);
+                                loadingBar.dismiss();
+                               /* RootRef.child("Groups").child(currentUserID).child("image").child("photo").setValue(uri.toString())
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+
+                                                    Toast.makeText(Main.this, "Image saved in Database Successfully...", Toast.LENGTH_SHORT).show();
+                                                    loadingBar.dismiss();
+                                                } else {
+                                                    String message = task.getException().toString();
+                                                    Toast.makeText(Main.this, "ERROR : " + message, Toast.LENGTH_SHORT).show();
+                                                    loadingBar.dismiss();
+                                                }
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        // Toast.makeText(Settings.this, "Image saved in Database Successfully...", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+*/
+                            }
+                        });
+
+                    }
+                });
+
+
+            }
+
+        }
+
+
+    }
+
+
 }
