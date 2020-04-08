@@ -148,7 +148,7 @@ public class Contacts extends Fragment {
     public static class ContactsViewHolder extends RecyclerView.ViewHolder {
         TextView userName, userStatus;
         CircleImageView profileImage;
-        ImageView onlineIcon;
+        TextView onlineIcon;
 
 
         public ContactsViewHolder(@NonNull View itemView) {

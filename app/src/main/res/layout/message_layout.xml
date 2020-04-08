@@ -4,124 +4,123 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-
-
     <TextView
-
-        android:gravity="center"
         android:id="@+id/messages_date"
         android:layout_width="160dp"
-        android:layout_marginTop="10dp"
         android:layout_height="30dp"
-        android:elevation="2dp"
-        android:background="@drawable/messages_date"
-        android:padding="2dp"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/messages_date"
+        android:elevation="3dp"
+        android:gravity="center"
+        android:padding="2dp"
         android:text=""
         android:textColor="@android:color/black"
         android:textSize="14sp" />
 
-
-
     <LinearLayout
-        android:layout_below="@id/messages_date"
-        android:layout_alignParentStart="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/messages_date"
+        android:layout_alignParentStart="true"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="10dp"
         android:orientation="vertical">
+
         <ImageView
-            android:layout_below="@id/messages_date"
             android:id="@+id/message_receiver_image_view"
             android:layout_width="150dp"
             android:layout_height="150dp"
+            android:layout_below="@id/messages_date"
             android:scaleType="centerCrop" />
+
         <TextView
             android:id="@+id/receiver_message_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:elevation="2dp"
             android:layout_marginRight="8dp"
             android:background="@drawable/receiver_messages_layout"
+            android:elevation="2dp"
             android:padding="10dp"
             android:text="sender messages"
             android:textColor="@android:color/black"
             android:textSize="14sp" />
+
         <LinearLayout
-            android:gravity="left"
-            android:layout_gravity="left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:gravity="left"
             android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/second_message_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="sender messages"
-                android:textStyle="bold"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 
-
-
-
-
-
-<LinearLayout
-    android:layout_below="@id/messages_date"
-    android:layout_alignParentEnd="true"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginRight="8dp"
-    android:layout_marginTop="10dp"
-    android:orientation="vertical">
-    <ImageView
-        android:layout_gravity="right"
-        android:id="@+id/message_sender_image_view"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:scaleType="centerCrop" />
-    <TextView
-        android:id="@+id/sender_message_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="2dp"
-        android:layout_marginLeft="8dp"
-        android:layout_gravity="right"
-        android:background="@drawable/sender_messages_layout"
-        android:padding="10dp"
-        android:text="sender messages"
-        android:textColor="@android:color/black"
-        android:textSize="14sp" />
-    <SeekBar
-        android:id="@+id/seekBar"
-        android:visibility="gone"
-        android:layout_gravity="right"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"/>
     <LinearLayout
-        android:gravity="center"
-        android:layout_gravity="right"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-    <TextView
-        android:id="@+id/message_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="sender messages"
-        android:textStyle="bold"
-        android:layout_marginRight="4dp"
-        android:textSize="12sp" />
+        android:layout_below="@id/messages_date"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="8dp"
+        android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/seen"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:src="@drawable/doublee"/>
+        <ImageView
+            android:id="@+id/message_sender_image_view"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="right"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/sender_message_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/sender_messages_layout"
+            android:elevation="2dp"
+            android:padding="10dp"
+            android:text="sender messages"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/message_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:text="sender messages"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/seen"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/doublee" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
 </RelativeLayout>
