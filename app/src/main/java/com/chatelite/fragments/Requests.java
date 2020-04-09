@@ -142,7 +142,7 @@ public class Requests extends Fragment {
                                                                                                     @Override
                                                                                                     public void onComplete(@NonNull Task<Void> task) {
                                                                                                         if (task.isSuccessful()) {
-                                                                                                            Toast.makeText(getContext(), "New Contact Saved...", Toast.LENGTH_SHORT).show();
+                                                                                                            Toast.makeText(getContext(), "The contact has been saved !", Toast.LENGTH_SHORT).show();
                                                                                                         }
                                                                                                     }
                                                                                                 });

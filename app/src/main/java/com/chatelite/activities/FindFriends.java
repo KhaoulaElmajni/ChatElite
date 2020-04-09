@@ -36,6 +36,7 @@ public class FindFriends extends AppCompatActivity {
         setContentView(R.layout.find_friends);
 
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Bariol_Regular.otf");
 
         FindFriendsRecyclerList = findViewById(R.id.find_friends_recycler_list);
         FindFriendsRecyclerList.setLayoutManager(new LinearLayoutManager(this));
@@ -44,7 +45,16 @@ public class FindFriends extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Find Friends");
+        for (int i = 0; i < mToolbar.getChildCount(); i++) {
+            View view = mToolbar.getChildAt(i);
 
+            if (view instanceof TextView) {
+                TextView textView = (TextView) view;
+                textView.setTypeface(custom_font);
+            }
+
+
+        }
     }
 
     @Override

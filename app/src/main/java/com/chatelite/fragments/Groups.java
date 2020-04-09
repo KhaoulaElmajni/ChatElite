@@ -98,6 +98,22 @@ public class Groups extends Fragment {
                                 holder.archive.setTypeface(custom_font);
 
 
+
+
+                                //TODO:
+                                holder.lastSentMessage.setVisibility(View.GONE);
+                                holder.lastMessageDateAndTime.setVisibility(View.GONE);
+                                holder.ifSeen.setVisibility(View.GONE);
+                                holder.messagesNumber.setVisibility(View.GONE);
+
+
+
+
+
+
+
+
+
                                 String groupId = dataSnapshot.getKey();
                                 String groupName = dataSnapshot.child("name").getValue().toString();
                                 holder.groupName.setText(groupName);
