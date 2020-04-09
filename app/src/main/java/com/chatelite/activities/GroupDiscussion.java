@@ -140,13 +140,13 @@ public class GroupDiscussion extends AppCompatActivity {
 
 
     private void InitializeFields() {
-        mToolbar = findViewById(R.id.group_chat_bar_layout);
+       /** mToolbar = findViewById(R.id.group_chat_bar_layout);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(currentGroupName);
         SendMessageButton = findViewById(R.id.send_message_button);
         userMessageInput = findViewById(R.id.input_group_message);
         displayTextMessages = findViewById(R.id.group_chat_text_display);
-        mScrollView = findViewById(R.id.my_scroll_view);
+        mScrollView = findViewById(R.id.my_scroll_view);**/
     }
 
     private void GetUserInfo() {
