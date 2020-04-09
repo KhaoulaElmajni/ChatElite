@@ -75,7 +75,7 @@
                 <TextView
                     android:textStyle="bold"
                     android:id="@+id/last_message_date_and_time"
-                    android:layout_width="100dp"
+                    android:layout_width="120dp"
                     android:layout_height="16dp"
                     android:text="08/02/2020 at 12:12 AM"
                     android:textAlignment="textStart"
@@ -86,7 +86,7 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:layout_marginLeft="2dp"
-                    android:src="@drawable/seen" />
+                    android:src="@drawable/sent_state" />
             </LinearLayout>
         </LinearLayout>
 

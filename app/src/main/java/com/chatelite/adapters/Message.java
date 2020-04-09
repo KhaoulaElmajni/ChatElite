@@ -32,6 +32,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import org.jsoup.Jsoup;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
@@ -40,16 +45,18 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
     private DatabaseReference UsersRef;
     Typeface custom_font;
     String date = null;
+    HashMap<String, ImageView> imageViews;
 
     public Message(Context context, List<com.chatelite.models.Message> userMessagesList) {
         this.userMessagesList = userMessagesList;
         custom_font = Typeface.createFromAsset(context.getAssets(), "fonts/Tajawal-Regular.ttf");
-
+        imageViews = new HashMap<>();
     }
 
     public class MessageViewHolder extends RecyclerView.ViewHolder {
         public TextView senderMessageText, receiverMessageText, sentTime, secondSentTime, messagesDate;
         public ImageView messageSenderPicture, messageReceiverPicture, seen;
+
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
             senderMessageText = itemView.findViewById(R.id.sender_message_text);
@@ -60,6 +67,7 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
             messageSenderPicture = itemView.findViewById(R.id.message_sender_image_view);
             seen = itemView.findViewById(R.id.seen);
             messagesDate = itemView.findViewById(R.id.messages_date);
+            Log.d("MY-CHATELIE", "CALLED !");
         }
     }
 
@@ -137,15 +145,39 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
                 messageViewHolder.senderMessageText.setTypeface(custom_font);
                 messageViewHolder.sentTime.setTypeface(custom_font);
                 messageViewHolder.messagesDate.setTypeface(custom_font);
+                messageViewHolder.messagesDate.setTypeface(custom_font);
+                messageViewHolder.seen.setTag(messages.getMessageID());
+                imageViews.put(messages.getMessageID(), messageViewHolder.seen);
+
+                FirebaseDatabase.getInstance().getReference().child("Message")
+                        .child(messages.getFrom()).child(messages.getTo()).
+                        child(messages.getMessageID()).addValueEventListener(new ValueEventListener() {
+                    String tag = messages.getMessageID();
+
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        ImageView imageView = imageViews.get(tag);
+
+                        if (imageView != null) {
+                            if (dataSnapshot.child("MessageState").getValue().toString().equals("SENT")) {
+                                imageView.setImageResource(R.drawable.sent_state);
+                            } else if (dataSnapshot.child("MessageState").getValue().toString().equals("SEEN")) {
+                                imageView.setImageResource(R.drawable.seen);
+                            } else if (dataSnapshot.child("MessageState").getValue().toString().equals("DELIVERED")) {
+                                imageView.setImageResource(R.drawable.doublee);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
 
 
-
-
-
-
-
-                messageViewHolder.senderMessageText.setOnTouchListener(new View.OnTouchListener() {
+                /*messageViewHolder.senderMessageText.setOnTouchListener(new View.OnTouchListener() {
                     float dX, initialX, initialY;
                     boolean isInitialPositionSet = false;
                     float dY;
@@ -187,11 +219,12 @@ public class Message extends RecyclerView.Adapter<Message.MessageViewHolder> {
                         return true;
                     }
                 });
-
+*/
 
             } else {
-                //TODO :
-                FirebaseDatabase.getInstance().getReference().child("Message").child(fromUserID).child(messageSenderId).child(messages.getMessageID()).child("MessageState").setValue("DELIVERED");
+                FirebaseDatabase.getInstance().getReference().child("Message").child(fromUserID).child(messageSenderId).child(messages.getMessageID()).child("MessageState").setValue("SEEN");
+                FirebaseDatabase.getInstance().getReference().child("Message").child(messageSenderId).child(fromUserID).child(messages.getMessageID()).child("MessageState").setValue("SEEN");
+
                 messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
                 messageViewHolder.sentTime.setVisibility(View.INVISIBLE);
                 messageViewHolder.seen.setVisibility(View.INVISIBLE);

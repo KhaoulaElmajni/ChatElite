@@ -792,6 +792,22 @@ public class Discussion extends AppCompatActivity {
                                 }
 
 
+
+                                try {
+                                    Jsoup.connect("https://fcm.googleapis.com/fcm/send")
+                                            .userAgent("Mozilla")
+                                            .header("Content-type", "application/json")
+                                            .header("Authorization", "key=AIzaSyDKXlWHYXZJqeezKjXtrQM43x8AQd9Zgl4")
+                                            .requestBody("{\"data\":{\"messageFrom\":\"" + messageSenderID + "\",\"messageTo\":\"" + messageReceiverID + "\",\"messageId\":\"" + messagePushID + "\"},\"to\" : \"" + deviceToken + "\"}")
+                                            .post();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+
+
+
+
                             }
 
                             @Override
@@ -865,6 +881,14 @@ public class Discussion extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+
+
+
+
+
+
+
+
 
 
                     //Since it has been sent successfully :
@@ -998,23 +1022,16 @@ public class Discussion extends AppCompatActivity {
     private void UpdateUserStatus(String state) {
         String saveCurrentTime, saveCurrentDate;
         Calendar calendar = Calendar.getInstance();
-
         SimpleDateFormat currentDate = new SimpleDateFormat("dd/MM/yyyy");
         saveCurrentDate = currentDate.format(calendar.getTime());
-
-
         SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm a");
         saveCurrentTime = currentTime.format(calendar.getTime());
-
         HashMap<String, Object> onlineStateMap = new HashMap<>();
         onlineStateMap.put("time", saveCurrentTime);
         onlineStateMap.put("date", saveCurrentDate);
         onlineStateMap.put("state", state);
-
         currentUserID = mAuth.getCurrentUser().getUid();
-
-        RootRef.child("Users").child(currentUserID).child("userState")
-                .updateChildren(onlineStateMap);
+        RootRef.child("Users").child(currentUserID).child("userState").updateChildren(onlineStateMap);
     }
 
 }

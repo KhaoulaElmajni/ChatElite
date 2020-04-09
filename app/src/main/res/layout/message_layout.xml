@@ -122,7 +122,7 @@
                 android:id="@+id/seen"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@drawable/seen" />
+                android:src="@drawable/sent_state" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

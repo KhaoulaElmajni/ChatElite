@@ -8,11 +8,19 @@ import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.chatelite.R;
 import com.chatelite.activities.Main;
 import com.chatelite.activities.VoiceCall;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -32,13 +40,54 @@ public class FirebaseMessaging extends FirebaseMessagingService {
                 if (remoteMessage.getData().size() > 0) {
                     Log.d("FCM", remoteMessage.getData().toString());
 
-                    if (remoteMessage.getData().get("Type").equals("Voice")) {
 
-                        Intent dialogIntent = new Intent(getApplicationContext(), VoiceCall.class);
-                        dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        dialogIntent.putExtra("id", remoteMessage.getData().get("to"));
-                        startActivity(dialogIntent);
+                    if (remoteMessage.getData().containsKey("Type")){
+
+                        if (remoteMessage.getData().get("Type").equals("Voice")) {
+
+                            Intent dialogIntent = new Intent(getApplicationContext(), VoiceCall.class);
+                            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            dialogIntent.putExtra("id", remoteMessage.getData().get("to"));
+                            startActivity(dialogIntent);
+                        }
+                }
+
+                    if (remoteMessage.getData().containsKey("messageFrom")) {
+
+                        DatabaseReference UsersRef = FirebaseDatabase.getInstance().getReference().child("Message")
+                                .child(remoteMessage.getData().get("messageFrom")).child(remoteMessage.getData().get("messageTo"))
+                                .child(remoteMessage.getData().get("messageId")).child("MessageState");
+                        UsersRef.setValue("DELIVERED").addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d("FCM", "SUCCEEDED");
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d("FCM", "FAILED");
+                            }
+                        });
+
+
+                        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Message")
+                                .child(remoteMessage.getData().get("messageTo")).child(remoteMessage.getData().get("messageFrom"))
+                                .child(remoteMessage.getData().get("messageId")).child("MessageState");
+                        usersRef.setValue("DELIVERED").addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d("FCM", "SUCCEEDED");
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d("FCM", "FAILED");
+                            }
+                        });
+                        Log.d("FCM", "PASSED !");
+
                     }
+
 
                 }
 

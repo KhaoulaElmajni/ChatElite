@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.CountDownTimer;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -46,6 +48,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -55,7 +58,10 @@ public class Chats extends Fragment {
     private DatabaseReference ChatsRef, UsersRef;
     private FirebaseAuth mAuth;
     private String currentUserID;
-
+    HashMap<String, ImageView> AllIfSeen;
+    HashMap<String, TextView> AllLastMessages;
+    HashMap<String, TextView> AllMessagesNumbers;
+    HashMap<String, TextView> AllMessagesDates;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,6 +72,11 @@ public class Chats extends Fragment {
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
         chatsList = PrivateChatsView.findViewById(R.id.chats_list);
         chatsList.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        AllIfSeen = new HashMap<>();
+        AllLastMessages = new HashMap<>();
+        AllMessagesNumbers = new HashMap<>();
+        AllMessagesDates = new HashMap<>();
         return PrivateChatsView;
     }
 
@@ -99,6 +110,7 @@ public class Chats extends Fragment {
                                 Picasso.get().load(retImage[0]).into(holder.profileImage);
                             }
 
+
                             //holder.itemView.setTag("");
                             final String[] message1 = new String[1];
                             final String[] message2 = new String[1];
@@ -116,27 +128,85 @@ public class Chats extends Fragment {
                             holder.userName.setTextColor(Color.BLACK);
                             holder.userName.setTypeface(custom_font);
                             holder.messagesNumber.setTypeface(custom_font);
-                            if (position == 0) {
-                                //holder.messagesNumber.setVisibility(View.GONE);
-                                holder.ifSeen.setVisibility(View.GONE);
-                                holder.messagesNumber.setText("3");
-                            } else if (position == 1) {
-                                holder.ifSeen.setImageResource(R.drawable.seen);
-                                holder.messagesNumber.setVisibility(View.GONE);
-                                holder.messagesNumber.setText("3");
-                            } else if (position == 2) {
-                                holder.ifSeen.setVisibility(View.GONE);
-                                //holder.messagesNumber.setVisibility(View.GONE);
-                                holder.messagesNumber.setText("1");
-                            } else if (position == 3) {
-                                holder.ifSeen.setImageResource(R.drawable.doublee);
-                                holder.messagesNumber.setVisibility(View.GONE);
-                                holder.messagesNumber.setText("4");
-                            } else if (position == 4) {
-                                holder.ifSeen.setVisibility(View.GONE);
-                                //holder.messagesNumber.setVisibility(View.GONE);
-                                holder.messagesNumber.setText("4");
-                            }
+
+
+                            AllLastMessages.put(usersIDs, holder.userLastMessage);
+                            AllMessagesNumbers.put(usersIDs, holder.messagesNumber);
+                            AllMessagesDates.put(usersIDs, holder.lastMessageDateAndTime);
+                            AllIfSeen.put(usersIDs, holder.ifSeen);
+
+
+                            FirebaseDatabase.getInstance().getReference().child("Message").child(usersIDs).child(currentUserID).addValueEventListener(new ValueEventListener() {
+                                String id = usersIDs;
+                                String name = retName;
+
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    int notSeen = 0;
+                                    DataSnapshot secondDataSnapshot = null;
+                                    for (DataSnapshot theDataSnapshot : dataSnapshot.getChildren()) {
+                                        secondDataSnapshot = theDataSnapshot;
+                                        if (!theDataSnapshot.child("from").getValue().toString().equals(currentUserID))
+                                            if (!theDataSnapshot.child("MessageState").getValue().toString().equals("SEEN")) {
+                                                notSeen += 1;
+                                            }
+
+                                    }
+                                    if (notSeen == 0) {
+                                        AllMessagesNumbers.get(id).setVisibility(View.GONE);
+                                    } else {
+                                        AllMessagesNumbers.get(id).setVisibility(View.VISIBLE);
+                                        AllMessagesNumbers.get(id).setText(notSeen + "");
+
+                                    }
+
+
+                                    String lastMessage = secondDataSnapshot.child("message").getValue(String.class);
+                                    if (lastMessage.length() > 34) {
+                                        lastMessage = lastMessage.substring(0, 33) + "...";
+                                    }
+
+
+                                    if (!secondDataSnapshot.child("from").getValue(String.class).equals(currentUserID)) {
+
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                            holder.userLastMessage.setText(Html.fromHtml("<b>" + name.split(" ")[0] + ": </b>" + lastMessage, Html.FROM_HTML_MODE_COMPACT));
+                                        } else {
+                                            holder.userLastMessage.setText(Html.fromHtml("<b>" + name.split(" ")[0] + ": </b>" + lastMessage));
+                                        }
+                                        AllIfSeen.get(usersIDs).setVisibility(View.GONE);
+                                    }
+
+
+                                    AllLastMessages.get(usersIDs).setText(lastMessage);
+
+                                    String date = secondDataSnapshot.child("date").getValue(String.class);
+                                    String time = secondDataSnapshot.child("time").getValue(String.class);
+                                    Calendar calendar = Calendar.getInstance();
+                                    SimpleDateFormat currentDate = new SimpleDateFormat("MM/dd/yyyy");
+                                    String current_Date = currentDate.format(calendar.getTime());
+
+                                    calendar.add(Calendar.DATE, -1);
+                                    SimpleDateFormat yesterdayDate = new SimpleDateFormat("MM/dd/yyyy");
+                                    String yesterday_Date = yesterdayDate.format(calendar.getTime());
+
+                                    if (current_Date.equals(date)) {
+                                        date = "Today";
+                                    } else if (yesterday_Date.equals(date)) {
+                                        date = "Yesterday";
+                                    }
+
+                                    AllMessagesDates.get(usersIDs).setText(date + " at " + time);
+
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
+
                             if (dataSnapshot.child("userState").hasChild("state")) {
                                 String state = dataSnapshot.child("userState").child("state").getValue().toString();
                                 String date = dataSnapshot.child("userState").child("date").getValue().toString();
@@ -149,6 +219,7 @@ public class Chats extends Fragment {
                                 } else if (state.equals("Typing")) {
                                     holder.lastMessageDate.setText("Typing...");
                                 } else if (state.equals("Offline")) {
+                                    holder.lastMessageDate.setTextColor(Color.parseColor("#000000"));
                                     Calendar calendar = Calendar.getInstance();
                                     SimpleDateFormat currentDate = new SimpleDateFormat("dd/MM/yyyy");
                                     String current_Date = currentDate.format(calendar.getTime());
@@ -178,10 +249,100 @@ public class Chats extends Fragment {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
+                                        DataSnapshot theDataSnapshot = null;
+                                        int notSeen = 0;
                                         for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                                            if (dataSnapshot1.hasChild("message")) {
+                                            theDataSnapshot = dataSnapshot1;
+                                            if (!theDataSnapshot.child("from").getValue().toString().equals(currentUserID))
+                                                if (!theDataSnapshot.child("MessageState").getValue().toString().equals("SEEN")) {
+                                                    notSeen += 1;
+                                                }
 
-                                                String input1 = dataSnapshot1.child("date").getValue().toString() + "-" + dataSnapshot1.child("time").getValue().toString();
+                                        }
+                                        if (theDataSnapshot.hasChild("message")) {
+
+
+                                            //String allDate = dataSnapshot1.child("date").getValue().toString() + "-" + dataSnapshot1.child("time").getValue().toString();
+                                            String from = theDataSnapshot.child("from").getValue().toString();
+                                            String id = theDataSnapshot.child("messageID").getValue().toString();
+                                            String message = theDataSnapshot.child("message").getValue().toString();
+                                            if (message.length() > 34) {
+                                                message = message.substring(0, 33) + "...";
+                                            }
+                                            if (from.equals(currentUserID)) {
+                                                //holder.userLastMessage.setText("You: " + message);
+
+
+                                                if (message.length() > 34) {
+                                                    message = message.substring(0, 33).trim() + "...";
+                                                }
+
+
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                                    holder.userLastMessage.setText(Html.fromHtml("<b>You: </b>" + message, Html.FROM_HTML_MODE_COMPACT));
+                                                } else {
+                                                    holder.userLastMessage.setText(Html.fromHtml("<b>You: </b>" + message));
+                                                }
+
+
+                                                FirebaseDatabase.getInstance().getReference().child("Message")
+                                                        .child(currentUserID).child(usersIDs).
+                                                        child(id).addValueEventListener(new ValueEventListener() {
+
+
+                                                    @Override
+                                                    public void onDataChange(DataSnapshot data) {
+                                                        if (data.child("MessageState").getValue().toString().equals("SENT")) {
+                                                            holder.ifSeen.setImageResource(R.drawable.sent_state);
+                                                        } else if (data.child("MessageState").getValue().toString().equals("SEEN")) {
+                                                            holder.ifSeen.setImageResource(R.drawable.seen);
+                                                        } else if (data.child("MessageState").getValue().toString().equals("DELIVERED")) {
+                                                            holder.ifSeen.setImageResource(R.drawable.doublee);
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(DatabaseError databaseError) {
+
+                                                    }
+                                                });
+
+
+                                            } else {
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                                    holder.userLastMessage.setText(Html.fromHtml("<b>" + retName.split(" ")[0] + ": </b>" + message, Html.FROM_HTML_MODE_COMPACT));
+                                                } else {
+                                                    holder.userLastMessage.setText(Html.fromHtml("<b>" + retName.split(" ")[0] + ": </b>" + message));
+                                                }
+                                                holder.ifSeen.setVisibility(View.GONE);
+                                            }
+
+
+                                            String date = theDataSnapshot.child("date").getValue().toString();
+                                            Calendar calendar = Calendar.getInstance();
+                                            SimpleDateFormat currentDate = new SimpleDateFormat("MM/dd/yyyy");
+                                            String current_Date = currentDate.format(calendar.getTime());
+
+                                            calendar.add(Calendar.DATE, -1);
+                                            SimpleDateFormat yesterdayDate = new SimpleDateFormat("MM/dd/yyyy");
+                                            String yesterday_Date = yesterdayDate.format(calendar.getTime());
+
+                                            if (current_Date.equals(date)) {
+                                                date = "Today";
+                                            } else if (yesterday_Date.equals(date)) {
+                                                date = "Yesterday";
+                                            }
+
+
+                                            holder.lastMessageDateAndTime.setText(date + " at " + theDataSnapshot.child("time").getValue().toString());
+                                            holder.lastMessageDateAndTime.setTypeface(custom_font);
+                                            if (notSeen == 0) {
+                                                holder.messagesNumber.setVisibility(View.GONE);
+                                            } else {
+                                                holder.messagesNumber.setText(notSeen + "");
+                                            }
+
+                                               /* String input1 = dataSnapshot1.child("date").getValue().toString() + "-" + dataSnapshot1.child("time").getValue().toString();
                                                 SimpleDateFormat parser = new SimpleDateFormat("MM/dd/yyyy-HH:mm a");
                                                 try {
                                                     date1[0] = parser.parse(input1);
@@ -216,7 +377,7 @@ public class Chats extends Fragment {
                                                  holder.ifSeen.setImageResource(R.drawable.doublee);
                                                  }
                                                  **/
-
+/*
                                                 message1[0] = dataSnapshot1.child("message").getValue().toString();
 
 
@@ -260,11 +421,11 @@ public class Chats extends Fragment {
                                                     public void onCancelled(DatabaseError databaseError) {
                                                     }
                                                 });
-
-
-                                            }
+*/
 
                                         }
+
+
                                     }
                                 }
 
