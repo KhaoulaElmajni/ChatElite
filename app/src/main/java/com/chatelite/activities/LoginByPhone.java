@@ -5,11 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chatelite.R;
@@ -21,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class LoginByPhone extends AppCompatActivity {
@@ -38,14 +43,14 @@ public class LoginByPhone extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_by_phone);
+        setContentView(R.layout.login_by_p);
 
         mAuth = FirebaseAuth.getInstance();
 
-        SendVerificationCodeButton = (Button) findViewById(R.id.send_ver_code_button);
-        VerifyButton = (Button) findViewById(R.id.verify_button);
-        InputPhoneNumber = (EditText) findViewById(R.id.phone_number_input);
-        InputVerificationCode = (EditText) findViewById(R.id.verification_code_input);
+        SendVerificationCodeButton = findViewById(R.id.send_ver_code_button);
+        VerifyButton = findViewById(R.id.verify_button);
+        InputPhoneNumber = findViewById(R.id.phone_number_input);
+        InputVerificationCode = findViewById(R.id.verification_code_input);
         loadingBar = new ProgressDialog(this);
 
         SendVerificationCodeButton.setOnClickListener(new View.OnClickListener() {
@@ -133,6 +138,43 @@ public class LoginByPhone extends AppCompatActivity {
         };
 
 
+        Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Bariol_Regular.otf");
+
+
+        RelativeLayout layout = findViewById(R.id.layout);
+        ArrayList<View> clds = getAllChildren(layout);
+        for (int i = 0; i < clds.size(); i += 1) {
+
+            if (clds.get(i) instanceof TextView) {
+                ((TextView) clds.get(i)).setTypeface(custom_font);
+            }
+
+            if (clds.get(i) instanceof Button) {
+                ((Button) clds.get(i)).setTypeface(custom_font);
+            }
+        }
+
+
+    }
+
+
+    private ArrayList<View> getAllChildren(View v) {
+
+        if (!(v instanceof ViewGroup)) {
+            ArrayList<View> viewArrayList = new ArrayList<>();
+            viewArrayList.add(v);
+            return viewArrayList;
+        }
+        ArrayList<View> result = new ArrayList<>();
+        ViewGroup viewGroup = (ViewGroup) v;
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            View child = viewGroup.getChildAt(i);
+            ArrayList<View> viewArrayList = new ArrayList<>();
+            viewArrayList.add(v);
+            viewArrayList.addAll(getAllChildren(child));
+            result.addAll(viewArrayList);
+        }
+        return result;
     }
 
 
