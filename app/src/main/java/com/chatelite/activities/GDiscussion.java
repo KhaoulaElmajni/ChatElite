@@ -42,6 +42,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chatelite.R;
+import com.chatelite.adapters.GroupMessage;
 import com.chatelite.adapters.Message;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -105,17 +106,13 @@ public class GDiscussion extends AppCompatActivity {
     private EditText MessageInputText;
     private final List<com.chatelite.models.Message> messagesList = new ArrayList<>();
     private LinearLayoutManager linearLayoutManager;
-    private Message messageAdapter;
+    private GroupMessage messageAdapter;
     private RecyclerView userMessagesList;
     private String saveCurrentTime, saveCurrentDate;
     private String checker = "", myUri = "";
     private StorageTask uploadTask;
     private Uri fileUri;
     private ProgressDialog loadingBar;
-
-
-
-
 
 
     private Toolbar mToolbar;
@@ -126,7 +123,6 @@ public class GDiscussion extends AppCompatActivity {
 
     private DatabaseReference UsersRef, GroupNameRef, GroupMessageKeyRef;
     private String currentGroupName, currentGroupId, currentUserName, currentDate, currentTime;
-
 
 
     @Override
@@ -147,20 +143,21 @@ public class GDiscussion extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         currentUserID = mAuth.getCurrentUser().getUid();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        currentGroupName = getIntent().getExtras().get("groupName").toString();
+        currentGroupId = getIntent().getExtras().get("groupId").toString();
         GroupNameRef = FirebaseDatabase.getInstance().getReference().child("Groups").child(currentGroupId).child("Messages");
 
 
+        /**currentGroupName = getIntent().getExtras().get("groupName").toString();
+         currentGroupId = getIntent().getExtras().get("groupId").toString();
 
-        currentGroupName = getIntent().getExtras().get("groupName").toString();
-        currentGroupId = getIntent().getExtras().get("groupId").toString();
-
-        deviceToken = getIntent().getExtras().get("device_token").toString();
-
+         deviceToken = getIntent().getExtras().get("device_token").toString();
+         **/
 
         InitializeControllers();
 
-
-        userName.setText(messageReceiverName);
+        messageReceiverImage = getIntent().getExtras().get("visit_user_image").toString();
+        userName.setText(currentGroupName);
         Picasso.get().load(messageReceiverImage).placeholder(R.drawable.profile_image).into(userImage);
 
         SendMessageButton.setOnClickListener(new View.OnClickListener() {
@@ -169,7 +166,7 @@ public class GDiscussion extends AppCompatActivity {
                 SendMessage();
             }
         });
-        DisplayLastSeen();
+        DisplayGroupInfos();
 
 
         SendFilesButton.setOnClickListener(new View.OnClickListener() {
@@ -273,7 +270,7 @@ public class GDiscussion extends AppCompatActivity {
 
         //TODO: To review later !
 
-        RootRef.child("Message").child(messageSenderID).child(messageReceiverID)
+        RootRef.child("Groups").child(currentGroupId).child("Messages")
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -506,7 +503,7 @@ public class GDiscussion extends AppCompatActivity {
                 }
         );
 
-        messageAdapter = new Message(this, messagesList);
+        messageAdapter = new GroupMessage(this, messagesList);
 
         userMessagesList = findViewById(R.id.private_messages_list_of_users);
         linearLayoutManager = new LinearLayoutManager(this);
@@ -661,11 +658,19 @@ public class GDiscussion extends AppCompatActivity {
         }
     }
 
-    private void DisplayLastSeen() {
-        RootRef.child("Users").child(messageReceiverID)
+    private void DisplayGroupInfos() {
+
+
+        RootRef.child("Groups").child(currentGroupId)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        userLastSeen.setText(dataSnapshot.child("members").getChildrenCount() + " members");
+
+
+
+                        /*
                         if (dataSnapshot.child("userState").hasChild("state")) {
                             String state = dataSnapshot.child("userState").child("state").getValue().toString();
                             String date = dataSnapshot.child("userState").child("date").getValue().toString();
@@ -689,13 +694,12 @@ public class GDiscussion extends AppCompatActivity {
                                 }
 
                                 userLastSeen.setText(date + " at " + time);
-                            }
-                            else if (state.equals("Typing")) {
+                            } else if (state.equals("Typing")) {
                                 userLastSeen.setText("Typing...");
                             }
                         } else {
                             userLastSeen.setText("Offline");
-                        }
+                        }*/
                     }
 
                     @Override
@@ -703,6 +707,8 @@ public class GDiscussion extends AppCompatActivity {
 
                     }
                 });
+
+
     }
 
     private void stopPlaying() {
@@ -727,18 +733,20 @@ public class GDiscussion extends AppCompatActivity {
             UpdateUserStatus("Online");
             VerifyUserExistance();
         }
-        RootRef.child("Message").child(messageSenderID).child(messageReceiverID)
+
+
+       /* RootRef.child("Message").child(messageSenderID).child(messageReceiverID)
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        /** Message messages = dataSnapshot.getValue(Message.class);
+                         Message messages = dataSnapshot.getValue(Message.class);
                          stopPlaying();
                          mp = MediaPlayer.create(Discussion.this, R.raw.incoming_message);
                          mp.start();
                          messagesList.add(messages);
                          messageAdapter.notifyDataSetChanged();
                          userMessagesList.smoothScrollToPosition(userMessagesList.getAdapter().getItemCount());
-                         **/
+
                     }
 
                     @Override
@@ -761,6 +769,8 @@ public class GDiscussion extends AppCompatActivity {
 
                     }
                 });
+
+        */
     }
 
     private void SendMessage() {
@@ -770,17 +780,16 @@ public class GDiscussion extends AppCompatActivity {
         if (TextUtils.isEmpty(messageText)) {
             Toast.makeText(this, "First write your message...", Toast.LENGTH_SHORT).show();
         } else {
-            String messageSenderRef = "Message/" + messageSenderID + "/" + messageReceiverID;
-            String messageReceiverRef = "Message/" + messageReceiverID + "/" + messageSenderID;
+            String messageSenderRef = "Groups/" + currentGroupId + "/" + "Messages";
+            //String messageReceiverRef = "Message/" + messageReceiverID + "/" + messageSenderID;
 
-            DatabaseReference userMessageKeyRef = RootRef.child("Message")
-                    .child(messageSenderID).child(messageReceiverID).push();
+            DatabaseReference userMessageKeyRef = RootRef.child("Groups").child(currentGroupId).child("Messages").push();
             String messagePushID = userMessageKeyRef.getKey();
             Map<String, String> messageTextBody = new HashMap<>();
             messageTextBody.put("message", messageText);
             messageTextBody.put("type", "text");
             messageTextBody.put("from", messageSenderID);
-            messageTextBody.put("to", messageReceiverID);
+            messageTextBody.put("to", "ALL");
             messageTextBody.put("messageID", messagePushID);
             messageTextBody.put("time", saveCurrentTime);
             messageTextBody.put("date", saveCurrentDate);
@@ -789,26 +798,46 @@ public class GDiscussion extends AppCompatActivity {
 
             Map messageBodyDetails = new HashMap();
             messageBodyDetails.put(messageSenderRef + "/" + messagePushID, messageTextBody);
-            messageBodyDetails.put(messageReceiverRef + "/" + messagePushID, messageTextBody);
+            //messageBodyDetails.put(messageReceiverRef + "/" + messagePushID, messageTextBody);
 
             RootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task task) {
                     if (task.isSuccessful()) {
-                        RootRef.child("Users").child(currentUserID).child("name").addValueEventListener(new ValueEventListener() {
+                        RootRef.child("Groups").child(currentGroupId).child("members").addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                senderName = dataSnapshot.getValue(String.class);
 
-                                try {
-                                    Jsoup.connect("https://fcm.googleapis.com/fcm/send")
-                                            .userAgent("Mozilla")
-                                            .header("Content-type", "application/json")
-                                            .header("Authorization", "key=AIzaSyDKXlWHYXZJqeezKjXtrQM43x8AQd9Zgl4")
-                                            .requestBody("{\"notification\":{\"title\":\"" + senderName + "\",\"body\":\"" + messageText + "\"},\"to\" : \"" + deviceToken + "\"}")
-                                            .post();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+
+                                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+
+
+                                    String senderId = dataSnapshot1.child("id").getValue(String.class);
+
+
+                                    RootRef.child("Users").child(senderId).addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            String token = dataSnapshot.child("device_token").getValue(String.class);
+                                            try {
+                                                Jsoup.connect("https://fcm.googleapis.com/fcm/send")
+                                                        .userAgent("Mozilla")
+                                                        .header("Content-type", "application/json")
+                                                        .header("Authorization", "key=AIzaSyDKXlWHYXZJqeezKjXtrQM43x8AQd9Zgl4")
+                                                        .requestBody("{\"notification\":{\"title\":\"" + currentGroupName + " : " + senderName + "\",\"body\":\"" + messageText + "\"},\"to\" : \"" + token + "\"}")
+                                                        .post();
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+
                                 }
 
 
@@ -819,7 +848,7 @@ public class GDiscussion extends AppCompatActivity {
 
                             }
                         });
-
+/*
                         ContentValues contentValues = new ContentValues();
                         //contentValues.put("MessageId", messageText);
                         contentValues.put("MessageContent", messageText);
@@ -830,7 +859,7 @@ public class GDiscussion extends AppCompatActivity {
                         contentValues.put("SendingDate", saveCurrentDate);
                         contentValues.put("SendingTime", saveCurrentTime);
                         chatEliteDB.insert("Message", null, contentValues);
-
+*/
 
                     } else {
                         Toast.makeText(GDiscussion.this, "ERROR:", Toast.LENGTH_SHORT).show();

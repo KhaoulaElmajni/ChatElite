@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.chatelite.R;
 import com.chatelite.activities.Discussion;
+import com.chatelite.activities.GDiscussion;
 import com.chatelite.activities.GroupDiscussion;
 import com.chatelite.models.Contact;
 import com.chatelite.models.Group;
@@ -101,13 +102,15 @@ public class Groups extends Fragment {
                                 holder.groupName.setText(groupName);
                                 holder.lastSentMessage.setText(groupName);
                                 Picasso.get().load(dataSnapshot.child("photo").getValue().toString()).placeholder(R.drawable.profile_image).into(holder.groupPhoto);
+                                String retImage = dataSnapshot.child("photo").getValue().toString();
                                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
                                         String currentGroupName = groupName;
-                                        Intent groupChatIntent = new Intent(getContext(), GroupDiscussion.class);
+                                        Intent groupChatIntent = new Intent(getContext(), GDiscussion.class);
                                         groupChatIntent.putExtra("groupName", currentGroupName);
                                         groupChatIntent.putExtra("groupId", groupId);
+                                        groupChatIntent.putExtra("visit_user_image", retImage);
                                         startActivity(groupChatIntent);
                                     }
                                 });
