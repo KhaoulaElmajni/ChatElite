@@ -75,7 +75,7 @@ public class Groups extends Fragment {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
 
-                            boolean memberOfTheGroup = false;
+                            boolean memberOfTheGroup = true;
                             int membersNumber = 0;
                             for (DataSnapshot dataSnapshot1 : dataSnapshot.child("members").getChildren()) {
                                 if (dataSnapshot1.child("id").getValue().toString().equals(mAuth.getCurrentUser().getUid())) {
@@ -183,7 +183,7 @@ public class Groups extends Fragment {
             lastMessageDateAndTime = itemView.findViewById(R.id.last_message_date_and_time);
             ifSeen = itemView.findViewById(R.id.ifSeen);
             archive = itemView.findViewById(R.id.archive);
-            layout = itemView.findViewById(R.id.layout);
+            layout = itemView.findViewById(R.id.the_layout);
         }
     }
 

@@ -205,7 +205,7 @@ public class GroupMessage extends RecyclerView.Adapter<GroupMessage.MessageViewH
 
             } else {
                 //TODO :
-                FirebaseDatabase.getInstance().getReference().child("Message").child(fromUserID).child(messageSenderId).child(messages.getMessageID()).child("MessageState").setValue("DELIVERED");
+               // FirebaseDatabase.getInstance().getReference().child("Groups").child(fromUserID).child(messageSenderId).child(messages.getMessageID()).child("MessageState").setValue("DELIVERED");
                 messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
                 messageViewHolder.sentTime.setVisibility(View.INVISIBLE);
                 messageViewHolder.seen.setVisibility(View.INVISIBLE);
