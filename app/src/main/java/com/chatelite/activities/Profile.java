@@ -43,7 +43,7 @@ public class Profile extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         UserRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        ChatRequestRef = FirebaseDatabase.getInstance().getReference().child("Chat Requests");
+        ChatRequestRef = FirebaseDatabase.getInstance().getReference().child("Requests");
 
         ContactsRef = FirebaseDatabase.getInstance().getReference().child("Contact");
         NotificationRef = FirebaseDatabase.getInstance().getReference().child("Notifications");
@@ -326,6 +326,8 @@ public class Profile extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
+                            ChatRequestRef.child(receiverUserID).child(senderUserID).child("from").setValue(senderUserID);
+                            ChatRequestRef.child(receiverUserID).child(senderUserID).child("to").setValue(receiverUserID);
                             ChatRequestRef.child(receiverUserID).child(senderUserID).child("request_type").setValue("received")
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override

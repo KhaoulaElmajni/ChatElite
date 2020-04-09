@@ -206,7 +206,7 @@ public class Settings extends AppCompatActivity {
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
 
-                                                    Toast.makeText(Settings.this, "Image saved in Database Successfully...", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(Settings.this, "Photo saved Successfully", Toast.LENGTH_SHORT).show();
                                                     loadingBar.dismiss();
                                                 } else {
                                                     String message = task.getException().toString();

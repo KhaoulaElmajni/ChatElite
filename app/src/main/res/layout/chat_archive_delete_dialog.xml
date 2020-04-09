@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.Settings">
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/start"
+        android:elevation="3dp">
+
+
+    <TextView
+        android:id="@+id/groupName"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="17dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="17dp"
+        android:gravity="center"
+        android:hint="Do you want to delete or archive this chat ?"
+        android:padding="4dp"
+        android:textSize="16sp" />
+
+<LinearLayout
+    android:gravity="center"
+    android:layout_below="@+id/groupName"
+    android:layout_width="wrap_content"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content">
+    <Button
+        android:id="@+id/delete"
+        android:layout_width="120dp"
+        android:layout_height="36dp"
+        android:layout_marginLeft="19dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="19dp"
+        android:background="@drawable/login_button"
+        android:elevation="3dp"
+        android:padding="2dp"
+        android:text="Delete"
+        android:textAllCaps="false"
+        android:textColor="@android:color/background_light"
+        android:textSize="18sp" />
+    <Button
+        android:id="@+id/archive"
+        android:layout_width="120dp"
+        android:layout_height="36dp"
+        android:layout_marginLeft="19dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="19dp"
+        android:background="@drawable/login_button"
+        android:elevation="3dp"
+        android:padding="2dp"
+        android:text="Archive"
+        android:textAllCaps="false"
+        android:textColor="@android:color/background_light"
+        android:textSize="18sp" />
+</LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

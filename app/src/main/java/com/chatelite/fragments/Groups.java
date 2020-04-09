@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chatelite.R;
@@ -121,6 +122,7 @@ public class Groups extends Fragment {
                             }
 
                         } else {
+                            holder.layout.setVisibility(View.GONE);
                             photo.setVisibility(View.VISIBLE);
                             text.setVisibility(View.VISIBLE);
                             myGroupsList.setVisibility(View.GONE);
@@ -153,6 +155,7 @@ public class Groups extends Fragment {
         CircleImageView groupPhoto;
         ImageView ifSeen;
         Button archive;
+        LinearLayout layout;
 
         public GroupsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -164,6 +167,7 @@ public class Groups extends Fragment {
             lastMessageDateAndTime = itemView.findViewById(R.id.last_message_date_and_time);
             ifSeen = itemView.findViewById(R.id.ifSeen);
             archive = itemView.findViewById(R.id.archive);
+            layout = itemView.findViewById(R.id.layout);
         }
     }
 

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import com.chatelite.R;
 import com.chatelite.models.Contact;
+import com.chatelite.models.Request;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -48,7 +50,7 @@ public class Requests extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         currentUserID = mAuth.getCurrentUser().getUid();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        ChatRequestsRef = FirebaseDatabase.getInstance().getReference().child("Chat Requests");
+        ChatRequestsRef = FirebaseDatabase.getInstance().getReference().child("Requests");
         ContactsRef = FirebaseDatabase.getInstance().getReference().child("Contact");
         myRequestsList = RequestsFragmentView.findViewById(R.id.chat_request_list);
         myRequestsList.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -59,27 +61,25 @@ public class Requests extends Fragment {
     public void onStart() {
         super.onStart();
 
-        FirebaseRecyclerOptions<Contact> options = new FirebaseRecyclerOptions.Builder<Contact>()
-                .setQuery(ChatRequestsRef.child(currentUserID), Contact.class).build();
-
+        FirebaseRecyclerOptions<Request> options = new FirebaseRecyclerOptions.Builder<Request>()
+                .setQuery(ChatRequestsRef, Request.class).build();
 
         myRequestsList.setVisibility(View.GONE);
-        ImageView photo = RequestsFragmentView.findViewById(R.id.no_item_photo);
-        TextView text = RequestsFragmentView.findViewById(R.id.no_item_text);
-        photo.setVisibility(View.VISIBLE);
-        text.setVisibility(View.VISIBLE);
+        //ImageView photo = RequestsFragmentView.findViewById(R.id.no_item_photo);
+        //TextView text = RequestsFragmentView.findViewById(R.id.no_item_text);
+        //photo.setVisibility(View.VISIBLE);
+        //text.setVisibility(View.VISIBLE);
 
-        Typeface  custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bariol_Regular.otf");
-        text.setTypeface(custom_font);
+        //Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bariol_Regular.otf");
+        //text.setTypeface(custom_font);
 
 
-        FirebaseRecyclerAdapter<Contact, RequsestsViewHolder> adapter = new
-                FirebaseRecyclerAdapter<Contact, RequsestsViewHolder>(options) {
+        FirebaseRecyclerAdapter<Request, RequsestsViewHolder> adapter = new
+                FirebaseRecyclerAdapter<Request, RequsestsViewHolder>(options) {
                     @Override
-                    protected void onBindViewHolder(@NonNull final RequsestsViewHolder holder, int position, @NonNull Contact model) {
+                    protected void onBindViewHolder(@NonNull final RequsestsViewHolder holder, int position, @NonNull Request model) {
                         holder.itemView.findViewById(R.id.request_accept_btn).setVisibility(View.VISIBLE);
                         holder.itemView.findViewById(R.id.request_cancel_btn).setVisibility(View.VISIBLE);
-
 
                         Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bariol_Regular.otf");
                         holder.userName.setTypeface(custom_font);
@@ -90,22 +90,17 @@ public class Requests extends Fragment {
                         final String list_user_id = getRef(position).getKey();
                         DatabaseReference getTypeRef = getRef(position).child("request_type").getRef();
 
-
-
-
-
-
-                        getTypeRef.addValueEventListener(new ValueEventListener() {
+                        ChatRequestsRef.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.exists()) {
-
+                                    Log.d("MY-CHATELITE", "e");
                                     //TODO :
                                     myRequestsList.setVisibility(View.VISIBLE);
-                                    ImageView photo = RequestsFragmentView.findViewById(R.id.no_item_photo);
-                                    TextView text = RequestsFragmentView.findViewById(R.id.no_item_text);
-                                    photo.setVisibility(View.GONE);
-                                    text.setVisibility(View.GONE);
+                                   // ImageView photo = RequestsFragmentView.findViewById(R.id.no_item_photo);
+                                    //TextView text = RequestsFragmentView.findViewById(R.id.no_item_text);
+                                    //photo.setVisibility(View.GONE);
+                                    ///text.setVisibility(View.GONE);
 
 
                                     String type = dataSnapshot.getValue().toString();
@@ -115,12 +110,8 @@ public class Requests extends Fragment {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
                                                 if (dataSnapshot.hasChild("image")) {
-
                                                     final String requestProfileImage = dataSnapshot.child("image").getValue().toString();
-
-
                                                     Picasso.get().load(requestProfileImage).into(holder.profileImage);
-
                                                 }
 
                                                 final String requestUserName = dataSnapshot.child("name").getValue().toString();
@@ -311,6 +302,7 @@ public class Requests extends Fragment {
 
 
                                 } else {
+                                    Log.d("MY-CHATELITE", "d");
                                     myRequestsList.setVisibility(View.GONE);
                                     ImageView photo = RequestsFragmentView.findViewById(R.id.no_item_photo);
                                     TextView text = RequestsFragmentView.findViewById(R.id.no_item_text);

@@ -1,6 +1,7 @@
 package com.chatelite.fragments;
 
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chatelite.R;
+import com.chatelite.activities.Discussion;
 import com.chatelite.models.Contact;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -79,6 +81,24 @@ public class Contacts extends Fragment {
                             holder.userStatus.setTypeface(custom_font);
                             holder.chatWith.setTypeface(custom_font);
                             holder.unfriend.setTypeface(custom_font);
+
+
+
+
+                            holder.chatWith.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent chatIntent = new Intent(getContext(), Discussion.class);
+                                    chatIntent.putExtra("visit_user_id", userIDs);
+                                    chatIntent.putExtra("visit_user_name", dataSnapshot.child("name").getValue(String.class));
+                                    chatIntent.putExtra("visit_user_image", dataSnapshot.child("image").getValue(String.class));
+                                    chatIntent.putExtra("device_token", dataSnapshot.child("device_token").getValue(String.class));
+                                    chatIntent.putExtra("user_full_name", dataSnapshot.child("device_token").getValue(String.class));
+                                    startActivity(chatIntent);
+                                }
+                            });
+
+
 
                             if (dataSnapshot.child("userState").hasChild("state")) {
                                 String state = dataSnapshot.child("userState").child("state").getValue().toString();

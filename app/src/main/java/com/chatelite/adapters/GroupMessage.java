@@ -62,6 +62,7 @@ public class GroupMessage extends RecyclerView.Adapter<GroupMessage.MessageViewH
             seen = itemView.findViewById(R.id.seen);
             messagesDate = itemView.findViewById(R.id.messages_date);
             theFirstMessageSender = itemView.findViewById(R.id.the_first_message_sender);
+            theSecondMessageSender = itemView.findViewById(R.id.the_second_message_sender);
         }
     }
 
@@ -140,6 +141,7 @@ public class GroupMessage extends RecyclerView.Adapter<GroupMessage.MessageViewH
                 messageViewHolder.sentTime.setTypeface(custom_font);
                 messageViewHolder.messagesDate.setTypeface(custom_font);
                 messageViewHolder.theFirstMessageSender.setTypeface(custom_font);
+                messageViewHolder.theSecondMessageSender.setVisibility(View.GONE);
 
 
                 UsersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(messages.getFrom());
@@ -157,7 +159,7 @@ public class GroupMessage extends RecyclerView.Adapter<GroupMessage.MessageViewH
                 });
 
 
-                messageViewHolder.senderMessageText.setOnTouchListener(new View.OnTouchListener() {
+                /*messageViewHolder.senderMessageText.setOnTouchListener(new View.OnTouchListener() {
                     float dX, initialX, initialY;
                     boolean isInitialPositionSet = false;
                     float dY;
@@ -199,7 +201,7 @@ public class GroupMessage extends RecyclerView.Adapter<GroupMessage.MessageViewH
                         return true;
                     }
                 });
-
+*/
 
             } else {
                 //TODO :
@@ -213,6 +215,30 @@ public class GroupMessage extends RecyclerView.Adapter<GroupMessage.MessageViewH
                 messageViewHolder.secondSentTime.setText(messages.getTime());
                 messageViewHolder.receiverMessageText.setText(messages.getMessage());
                 messageViewHolder.secondSentTime.setTypeface(custom_font);
+                messageViewHolder.theFirstMessageSender.setVisibility(View.GONE);
+                messageViewHolder.theSecondMessageSender.setVisibility(View.VISIBLE);
+                messageViewHolder.theSecondMessageSender.setTypeface(custom_font);
+
+
+                UsersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(messages.getFrom());
+                UsersRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String senderName = dataSnapshot.child("name").getValue().toString();
+                        messageViewHolder.theSecondMessageSender.setText(senderName);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
+
+
+
             }
 
         } else if (fromMessageType.equals("image")) {

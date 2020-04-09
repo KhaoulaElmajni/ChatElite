@@ -4,31 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.Requests">
+    <!--
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/no_item_photo"
+            android:layout_centerHorizontal="true"
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/no_request" />
 
-    <ImageView
-        android:id="@+id/no_item_photo"
-        android:layout_centerHorizontal="true"
-        android:layout_width="match_parent"
-        android:layout_height="280dp"
-        android:layout_centerVertical="true"
-        android:src="@drawable/no_request" />
-
-    <TextView
-        android:layout_marginTop="20dp"
-        android:id="@+id/no_item_text"
-        android:layout_below="@id/no_item_photo"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="There is no request !"
-        android:textAlignment="center"
-        android:textSize="26sp"
-        android:textStyle="bold" />
-
+        <TextView
+            android:visibility="gone"
+            android:layout_marginTop="20dp"
+            android:id="@+id/no_item_text"
+            android:layout_below="@id/no_item_photo"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="There is no request !"
+            android:textAlignment="center"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+    -->
     <androidx.recyclerview.widget.RecyclerView
-        android:visibility="gone"
         android:id="@+id/chat_request_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

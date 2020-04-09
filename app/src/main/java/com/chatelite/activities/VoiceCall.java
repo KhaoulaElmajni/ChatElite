@@ -9,6 +9,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -47,13 +48,15 @@ public class VoiceCall extends AppCompatActivity {
     private Call call;
     private TextView callState;
     private SinchClient sinchClient;
-    private Button button;
+    private ImageView button;
     private String callerId;
     private String recipientId;
-
+    Ringtone ringtone;
+    public static boolean running = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        running = true;
         /*this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
         setContentView(R.layout.voice_call);
@@ -61,6 +64,9 @@ public class VoiceCall extends AppCompatActivity {
         Intent intent = getIntent();
         callerId = preferences.getString("FcmToken", "me");
         recipientId = intent.getStringExtra("recipientId");
+
+        Log.d("MY-CHATELITE",callerId+"###,###"+recipientId);
+
         sinchClient = Sinch.getSinchClientBuilder()
                 .context(this)
                 .userId(callerId)
@@ -84,7 +90,9 @@ public class VoiceCall extends AppCompatActivity {
                 if (call == null) {
                     call = sinchClient.getCallClient().callUser(recipientId);
                     call.addCallListener(new SinchCallListener());
-                    button.setText("Hang Up");
+                    ringtone.stop();
+                    //TODO
+                    //button.setText("Hang Up");
                 } else {
                     call.hangup();
                 }
@@ -112,7 +120,7 @@ public class VoiceCall extends AppCompatActivity {
 
 
         Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-        Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), uri);
+        ringtone = RingtoneManager.getRingtone(getApplicationContext(), uri);
         ringtone.play();
 
 
@@ -166,14 +174,14 @@ public class VoiceCall extends AppCompatActivity {
         public void onCallEnded(Call endedCall) {
             call = null;
             SinchError a = endedCall.getDetails().getError();
-            button.setText("Call");
+            //button.setText("Call");
             callState.setText("");
             setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
         }
 
         @Override
         public void onCallEstablished(Call establishedCall) {
-            callState.setText("connected");
+            ringtone.stop();
             setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
         }
 
@@ -194,7 +202,7 @@ public class VoiceCall extends AppCompatActivity {
             Toast.makeText(VoiceCall.this, "incoming call", Toast.LENGTH_SHORT).show();
             call.answer();
             call.addCallListener(new SinchCallListener());
-            button.setText("Hang Up");
+            //button.setText("Hang Up");
         }
     }
 }

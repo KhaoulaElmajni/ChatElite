@@ -7,11 +7,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="6dp"
         android:layout_marginRight="12dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="2dp"
         android:background="@drawable/start"
-        android:elevation="4dp"
+        android:elevation="3dp"
         android:orientation="horizontal"
         android:padding="10dp">
 
@@ -25,14 +25,14 @@
                 android:layout_height="60dp"
                 android:src="@drawable/the_user" />
 
-            <ImageView
+            <TextView
                 android:id="@+id/user_online_status"
                 android:layout_width="10dp"
                 android:layout_height="10dp"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="50dp"
-                android:src="@drawable/offline"
-                android:visibility="visible" />
+                android:layout_marginTop="55dp"
+                android:background="@drawable/user_online"
+                android:visibility="gone" />
         </RelativeLayout>
 
         <LinearLayout

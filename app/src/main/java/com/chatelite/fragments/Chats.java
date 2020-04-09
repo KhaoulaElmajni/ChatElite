@@ -1,10 +1,12 @@
 package com.chatelite.fragments;
 
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -17,12 +19,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.CountDownTimer;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -31,6 +35,7 @@ import android.widget.Toast;
 
 import com.chatelite.R;
 import com.chatelite.activities.Discussion;
+import com.chatelite.activities.Main;
 import com.chatelite.models.Contact;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -42,6 +47,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -142,62 +149,65 @@ public class Chats extends Fragment {
 
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    int notSeen = 0;
-                                    DataSnapshot secondDataSnapshot = null;
-                                    for (DataSnapshot theDataSnapshot : dataSnapshot.getChildren()) {
-                                        secondDataSnapshot = theDataSnapshot;
-                                        if (!theDataSnapshot.child("from").getValue().toString().equals(currentUserID))
-                                            if (!theDataSnapshot.child("MessageState").getValue().toString().equals("SEEN")) {
-                                                notSeen += 1;
-                                            }
 
-                                    }
-                                    if (notSeen == 0) {
-                                        AllMessagesNumbers.get(id).setVisibility(View.GONE);
-                                    } else {
-                                        AllMessagesNumbers.get(id).setVisibility(View.VISIBLE);
-                                        AllMessagesNumbers.get(id).setText(notSeen + "");
+                                    if (dataSnapshot.exists()) {
+                                        int notSeen = 0;
+                                        DataSnapshot secondDataSnapshot = null;
+                                        for (DataSnapshot theDataSnapshot : dataSnapshot.getChildren()) {
+                                            secondDataSnapshot = theDataSnapshot;
+                                            if (!theDataSnapshot.child("from").getValue().toString().equals(currentUserID))
+                                                if (!theDataSnapshot.child("MessageState").getValue().toString().equals("SEEN")) {
+                                                    notSeen += 1;
+                                                }
 
-                                    }
-
-
-                                    String lastMessage = secondDataSnapshot.child("message").getValue(String.class);
-                                    if (lastMessage.length() > 34) {
-                                        lastMessage = lastMessage.substring(0, 33) + "...";
-                                    }
-
-
-                                    if (!secondDataSnapshot.child("from").getValue(String.class).equals(currentUserID)) {
-
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                            holder.userLastMessage.setText(Html.fromHtml("<b>" + name.split(" ")[0] + ": </b>" + lastMessage, Html.FROM_HTML_MODE_COMPACT));
-                                        } else {
-                                            holder.userLastMessage.setText(Html.fromHtml("<b>" + name.split(" ")[0] + ": </b>" + lastMessage));
                                         }
-                                        AllIfSeen.get(usersIDs).setVisibility(View.GONE);
+                                        if (notSeen == 0) {
+                                            AllMessagesNumbers.get(id).setVisibility(View.GONE);
+                                        } else {
+                                            AllMessagesNumbers.get(id).setVisibility(View.VISIBLE);
+                                            AllMessagesNumbers.get(id).setText(notSeen + "");
+
+                                        }
+
+
+                                        String lastMessage = secondDataSnapshot.child("message").getValue(String.class);
+                                        if (lastMessage.length() > 34) {
+                                            lastMessage = lastMessage.substring(0, 33) + "...";
+                                        }
+
+
+                                        if (!secondDataSnapshot.child("from").getValue(String.class).equals(currentUserID)) {
+
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                                holder.userLastMessage.setText(Html.fromHtml("<b>" + name.split(" ")[0] + ": </b>" + lastMessage, Html.FROM_HTML_MODE_COMPACT));
+                                            } else {
+                                                holder.userLastMessage.setText(Html.fromHtml("<b>" + name.split(" ")[0] + ": </b>" + lastMessage));
+                                            }
+                                            AllIfSeen.get(usersIDs).setVisibility(View.GONE);
+                                        }
+
+
+                                        AllLastMessages.get(usersIDs).setText(lastMessage);
+
+                                        String date = secondDataSnapshot.child("date").getValue(String.class);
+                                        String time = secondDataSnapshot.child("time").getValue(String.class);
+                                        Calendar calendar = Calendar.getInstance();
+                                        SimpleDateFormat currentDate = new SimpleDateFormat("MM/dd/yyyy");
+                                        String current_Date = currentDate.format(calendar.getTime());
+
+                                        calendar.add(Calendar.DATE, -1);
+                                        SimpleDateFormat yesterdayDate = new SimpleDateFormat("MM/dd/yyyy");
+                                        String yesterday_Date = yesterdayDate.format(calendar.getTime());
+
+                                        if (current_Date.equals(date)) {
+                                            date = "Today";
+                                        } else if (yesterday_Date.equals(date)) {
+                                            date = "Yesterday";
+                                        }
+
+                                        AllMessagesDates.get(usersIDs).setText(date + " at " + time);
+
                                     }
-
-
-                                    AllLastMessages.get(usersIDs).setText(lastMessage);
-
-                                    String date = secondDataSnapshot.child("date").getValue(String.class);
-                                    String time = secondDataSnapshot.child("time").getValue(String.class);
-                                    Calendar calendar = Calendar.getInstance();
-                                    SimpleDateFormat currentDate = new SimpleDateFormat("MM/dd/yyyy");
-                                    String current_Date = currentDate.format(calendar.getTime());
-
-                                    calendar.add(Calendar.DATE, -1);
-                                    SimpleDateFormat yesterdayDate = new SimpleDateFormat("MM/dd/yyyy");
-                                    String yesterday_Date = yesterdayDate.format(calendar.getTime());
-
-                                    if (current_Date.equals(date)) {
-                                        date = "Today";
-                                    } else if (yesterday_Date.equals(date)) {
-                                        date = "Yesterday";
-                                    }
-
-                                    AllMessagesDates.get(usersIDs).setText(date + " at " + time);
-
                                 }
 
                                 @Override
@@ -260,8 +270,7 @@ public class Chats extends Fragment {
 
                                         }
                                         if (theDataSnapshot.hasChild("message")) {
-
-
+                                            holder.lastMessageDateAndTime.setVisibility(View.VISIBLE);
                                             //String allDate = dataSnapshot1.child("date").getValue().toString() + "-" + dataSnapshot1.child("time").getValue().toString();
                                             String from = theDataSnapshot.child("from").getValue().toString();
                                             String id = theDataSnapshot.child("messageID").getValue().toString();
@@ -279,6 +288,7 @@ public class Chats extends Fragment {
 
 
                                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                                    holder.ifSeen.setVisibility(View.VISIBLE);
                                                     holder.userLastMessage.setText(Html.fromHtml("<b>You: </b>" + message, Html.FROM_HTML_MODE_COMPACT));
                                                 } else {
                                                     holder.userLastMessage.setText(Html.fromHtml("<b>You: </b>" + message));
@@ -435,68 +445,39 @@ public class Chats extends Fragment {
                             });
 
 
-                            CountDownTimer countDownTimer = new CountDownTimer(500, 500) {
-
-                                public void onTick(long millisUntilFinished) {
-
-                                }
-
-                                public void onFinish() {
-                                    //Toast.makeText(getActivity(), "Long preess", Toast.LENGTH_SHORT).show();
-
-                                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-                                    builder1.setMessage("Write your message here.");
-                                    builder1.setCancelable(true);
-
-                                    builder1.setPositiveButton(
-                                            "Delete chat",
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    dialog.cancel();
-                                                }
-                                            });
-
-                                    builder1.setNegativeButton(
-                                            "Archive Chat",
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    dialog.cancel();
-                                                }
-                                            });
-
-                                    AlertDialog alert11 = builder1.create();
-                                    alert11.show();
-
-                                }
-
-                            };
-
-
                             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                                String id = usersIDs;
+
                                 @Override
                                 public boolean onLongClick(View v) {
-                                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-                                    builder1.setMessage("Write your message here.");
-                                    builder1.setCancelable(true);
 
-                                    builder1.setPositiveButton(
-                                            "Delete chat",
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    dialog.cancel();
-                                                }
-                                            });
 
-                                    builder1.setNegativeButton(
-                                            "Archive Chat",
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    dialog.cancel();
-                                                }
-                                            });
+                                    final Dialog dialog = new Dialog(getActivity());
+                                    dialog.setContentView(R.layout.chat_archive_delete_dialog);
+                                    dialog.setCancelable(true);
+                                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                    TextView name = dialog.findViewById(R.id.groupName);
+                                    Button delete = dialog.findViewById(R.id.delete);
+                                    Button archive = dialog.findViewById(R.id.archive);
+                                    Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bariol_Regular.otf");
+                                    name.setTypeface(custom_font);
+                                    archive.setTypeface(custom_font);
+                                    delete.setTypeface(custom_font);
+                                    archive.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
 
-                                    AlertDialog alert11 = builder1.create();
-                                    alert11.show();
+
+                                            dialog.dismiss();
+
+
+                                        }
+                                    });
+
+
+                                    dialog.show();
+
+
                                     return false;
                                 }
                             });

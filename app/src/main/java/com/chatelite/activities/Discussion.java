@@ -669,8 +669,7 @@ public class Discussion extends AppCompatActivity {
                                 }
 
                                 userLastSeen.setText(date + " at " + time);
-                            }
-                            else if (state.equals("Typing")) {
+                            } else if (state.equals("Typing")) {
                                 userLastSeen.setText("Typing...");
                             }
                         } else {
@@ -792,7 +791,6 @@ public class Discussion extends AppCompatActivity {
                                 }
 
 
-
                                 try {
                                     Jsoup.connect("https://fcm.googleapis.com/fcm/send")
                                             .userAgent("Mozilla")
@@ -803,9 +801,6 @@ public class Discussion extends AppCompatActivity {
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
-
-
-
 
 
                             }
@@ -883,14 +878,6 @@ public class Discussion extends AppCompatActivity {
                     }
 
 
-
-
-
-
-
-
-
-
                     //Since it has been sent successfully :
 
                     ContentValues contentValues = new ContentValues();
@@ -935,22 +922,43 @@ public class Discussion extends AppCompatActivity {
         if (id == R.id.voice_call) {
 
 
-            try {
-                Jsoup.connect("https://fcm.googleapis.com/fcm/send")
-                        .userAgent("Mozilla")
-                        .header("Content-type", "application/json")
-                        .header("Authorization", "key=AIzaSyDKXlWHYXZJqeezKjXtrQM43x8AQd9Zgl4")
-                        .requestBody("{\"data\":{\"title\":\"" + "Full Name" + "\",\"Type\":\"" + "Voice" + "\"},\"to\" : \"" + deviceToken + "\"}")
-                        .post();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            RootRef.child("Users").child(currentUserID)
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+
+                                String token = dataSnapshot.child("device_token").getValue(String.class);
+
+                                try {
+                                    Jsoup.connect("https://fcm.googleapis.com/fcm/send")
+                                            .userAgent("Mozilla")
+                                            .header("Content-type", "application/json")
+                                            .header("Authorization", "key=AIzaSyDKXlWHYXZJqeezKjXtrQM43x8AQd9Zgl4")
+                                            .requestBody("{\"data\":{\"title\":\"" + "Full Name" + "\",\"Type\":\"" + "Voice" + "\",\"to\" : \"" + token + "\" },\"to\" : \"" + deviceToken + "\"}")
+                                            .post();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
 
 
-            //todo:
-            Intent phoneLoginIntent = new Intent(Discussion.this, VoiceCall.class);
-            phoneLoginIntent.putExtra("recipientId", deviceToken);
-            startActivity(phoneLoginIntent);
+                                //todo:
+                                Intent phoneLoginIntent = new Intent(Discussion.this, VoiceCall.class);
+                                phoneLoginIntent.putExtra("recipientId", deviceToken);
+                                startActivity(phoneLoginIntent);
+
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+
             return true;
         }
 

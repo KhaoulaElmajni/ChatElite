@@ -143,7 +143,7 @@ public class LoginByEmail extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
                                             SendUserToMainActivity();
-                                            Toast.makeText(LoginByEmail.this, "Logged in successful...", Toast.LENGTH_SHORT).show();
+                                            //Toast.makeText(LoginByEmail.this, "Logged in successful...", Toast.LENGTH_SHORT).show();
                                             loadingBar.dismiss();
                                         }
                                     }

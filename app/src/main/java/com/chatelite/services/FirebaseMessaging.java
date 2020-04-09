@@ -41,16 +41,17 @@ public class FirebaseMessaging extends FirebaseMessagingService {
                     Log.d("FCM", remoteMessage.getData().toString());
 
 
-                    if (remoteMessage.getData().containsKey("Type")){
+                    if (remoteMessage.getData().containsKey("Type")) {
 
                         if (remoteMessage.getData().get("Type").equals("Voice")) {
-
-                            Intent dialogIntent = new Intent(getApplicationContext(), VoiceCall.class);
-                            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            dialogIntent.putExtra("id", remoteMessage.getData().get("to"));
-                            startActivity(dialogIntent);
+                            if (!VoiceCall.running) {
+                                Intent dialogIntent = new Intent(getApplicationContext(), VoiceCall.class);
+                                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                dialogIntent.putExtra("recipientId", remoteMessage.getData().get("to"));
+                                startActivity(dialogIntent);
+                            }
                         }
-                }
+                    }
 
                     if (remoteMessage.getData().containsKey("messageFrom")) {
 

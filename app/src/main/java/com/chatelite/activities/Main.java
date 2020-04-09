@@ -355,7 +355,7 @@ public class Main extends AppCompatActivity {
 
         final Dialog dialog = new Dialog(Main.this);
         dialog.setContentView(R.layout.new_group);
-        dialog.setCancelable(false);
+        dialog.setCancelable(true);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         EditText name = dialog.findViewById(R.id.groupName);
         Button create = dialog.findViewById(R.id.createGroup);

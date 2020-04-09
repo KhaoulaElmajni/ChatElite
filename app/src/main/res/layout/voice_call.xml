@@ -51,16 +51,6 @@
 
 
 
-    <Button
-        android:visibility="gone"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/set_profile_image"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/button"
-        android:layout_width="160dp"
-        android:layout_height="50dp"
-        android:text="Start call" />
-
 
     <TextView
         android:visibility="gone"
@@ -88,6 +78,7 @@
         android:src="@drawable/picture"/>
 
     <ImageView
+        android:id="@+id/button"
         android:layout_marginRight="26dp"
         android:layout_marginTop="20dp"
         android:layout_below="@+id/chat"
