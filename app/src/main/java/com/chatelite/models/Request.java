@@ -1,13 +1,14 @@
 package com.chatelite.models;
 
 public class Request {
+    private String state, from, to;
 
     public String getType() {
-        return type;
+        return state;
     }
 
     public void setType(String type) {
-        this.type = type;
+        this.state = type;
     }
 
     public String getFrom() {
@@ -26,5 +27,5 @@ public class Request {
         this.to = to;
     }
 
-    String type,from,to;
+
 }

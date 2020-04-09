@@ -33,7 +33,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="50dp"
                 android:src="@drawable/offline"
-                android:visibility="visible" />
+                android:visibility="gone" />
         </RelativeLayout>
 
         <LinearLayout
@@ -70,6 +70,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:orientation="vertical">
 
             <Button
