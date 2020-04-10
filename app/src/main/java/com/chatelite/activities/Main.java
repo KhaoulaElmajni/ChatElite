@@ -167,13 +167,13 @@ public class Main extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         RootRef = FirebaseDatabase.getInstance().getReference();
-        mToolbar = (Toolbar) findViewById(R.id.main_page_toolbar);
+        mToolbar =  findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("ChatElite");
-        myViewPager = (ViewPager) findViewById(R.id.main_tabs_pager);
+        myViewPager = findViewById(R.id.main_tabs_pager);
         myTabsAccessorAsadpter = new TabsAccessor(getSupportFragmentManager());
         myViewPager.setAdapter(myTabsAccessorAsadpter);
-        myTabLayout = (TabLayout) findViewById(R.id.main_tabs);
+        myTabLayout =  findViewById(R.id.main_tabs);
         myTabLayout.setupWithViewPager(myViewPager);
 
         Toolbar toolbar = mToolbar;

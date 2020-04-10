@@ -52,6 +52,7 @@
         android:elevation="3dp"
         android:gravity="center"
         android:hint="Email"
+        android:text="emily.taylor@gmail.com"
         android:inputType="textEmailAddress"
         android:padding="4dp"
         android:textSize="20sp"
@@ -85,8 +86,9 @@
         android:background="@drawable/input"
         android:elevation="3dp"
         android:gravity="center"
+        android:text="123456789"
         android:hint="Password"
-        android:inputType="textEmailAddress"
+        android:inputType="textPassword"
         android:padding="4dp"
         android:textSize="20sp"
         android:id="@+id/set_user_password"/>

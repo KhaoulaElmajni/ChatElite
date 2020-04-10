@@ -200,14 +200,15 @@ public class Settings extends AppCompatActivity {
                         mountainImagesRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
+                                String link = uri.toString();
                                 RootRef.child("Users").child(currentUserID).child("image").setValue(uri.toString())
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
-
                                                     Toast.makeText(Settings.this, "Photo saved Successfully", Toast.LENGTH_SHORT).show();
                                                     loadingBar.dismiss();
+                                                    Picasso.get().load(link).into(userProfileImage);
                                                 } else {
                                                     String message = task.getException().toString();
                                                     Toast.makeText(Settings.this, "ERROR : " + message, Toast.LENGTH_SHORT).show();
@@ -238,6 +239,7 @@ public class Settings extends AppCompatActivity {
     private void UpdateSettings() {
         String setUserName = userName.getText().toString();
         String setUserStatus = userStatus.getText().toString();
+        String phone = userPhoneNumber.getText().toString();
         if (TextUtils.isEmpty(setUserName)) {
             Toast.makeText(this, "Please write your user name first...", Toast.LENGTH_SHORT).show();
         }
@@ -248,6 +250,7 @@ public class Settings extends AppCompatActivity {
             profileMap.put("uid", currentUserID);
             profileMap.put("name", setUserName);
             profileMap.put("status", setUserStatus);
+            profileMap.put("phone", phone);
             RootRef.child("Users").child(currentUserID).updateChildren(profileMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
@@ -272,9 +275,11 @@ public class Settings extends AppCompatActivity {
                 if ((dataSnapshot.exists()) && (dataSnapshot.hasChild("name") && (dataSnapshot.hasChild("image")))) {
                     String retrieveUserName = dataSnapshot.child("name").getValue().toString();
                     String retrievestatus = dataSnapshot.child("status").getValue().toString();
+                    String retrievePhoneNumber = dataSnapshot.child("phone").getValue().toString();
                     String retrieveProfileImage = dataSnapshot.child("image").getValue().toString();
                     userName.setText(retrieveUserName);
                     userStatus.setText(retrievestatus);
+                    userPhoneNumber.setText(retrievePhoneNumber);
                     Picasso.get().load(retrieveProfileImage).into(userProfileImage);
 
 
